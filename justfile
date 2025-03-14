@@ -25,10 +25,11 @@ run *args:
     #!/usr/bin/env bash
     host="${1:-"{{default_host}}"}" && shift 1
     mkdir -p "{{build_dir}}"
+    cd build
 
     nix run \
         --show-trace --verbose --log-format internal-json \
-        ".#nixosConfigurations.$host.config.system.build.vmWithDisko" "$@" |& \
+        "..#nixosConfigurations.$host.config.system.build.vmWithDisko" "$@" |& \
         nom --json
 
 # Build the NixOS VM image for `host` (`$1`) into the link `build/nixos-$host`.
@@ -36,15 +37,15 @@ build *args:
     #!/usr/bin/env bash
     host="${1:-"{{default_host}}"}" && shift 1
     mkdir -p "{{build_dir}}"
+    cd build
 
     nix build \
         --out-link "{{build_dir}}/disko-image-script" \
         --show-trace --verbose --log-format internal-json \
         "$@" \
-        ".#nixosConfigurations.$host.config.system.build.diskoImagesScript" |& \
+        "..#nixosConfigurations.$host.config.system.build.diskoImagesScript" |& \
         nom --json
 
-    cd build
     sudo ./disko-image-script --build-memory 2048
 
 # Run nix-tree to get the tree of all packages and

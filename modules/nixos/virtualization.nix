@@ -1,4 +1,5 @@
 {
+  lib,
   config,
   ...
 }:
@@ -9,14 +10,14 @@
   ];
 
   # Libvirtd ===============================
-  services.qemuGuest.enable = true;
-  services.spice-vdagentd.enable = true;
   boot.kernelModules = [
     "kvm-amd"
     "kvm-intel"
   ];
 
-  virtualisation.spiceUSBRedirection.enable = true;
+  # On Host systems we enable this (but not on guest os).
+  services.qemuGuest.enable = true;
+
   virtualisation.libvirtd = {
     enable = true;
     qemu = {

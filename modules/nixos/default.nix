@@ -18,8 +18,11 @@
   sound = import ./sound.nix;
   time = import ./time.nix;
   user = import ./user.nix;
+
   virtualization = import ./virtualization.nix;
+  virtualization-vm = import ./virtualization-vm.nix;
   containerization = import ./containerization.nix;
+
   windowing = import ./windowing.nix;
 
   settings = import ./settings.nix;

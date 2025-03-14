@@ -130,6 +130,8 @@
             packages = [
               pkgs.nix-output-monitor
               pkgs.just
+              pkgs.virt-manager
+              pkgs.virt-viewer
             ];
           };
         }
@@ -137,6 +139,7 @@
     in
     {
       inherit
+        formatter
         packages
         overlays
         nixosModules

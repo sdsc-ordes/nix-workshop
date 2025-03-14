@@ -34,6 +34,7 @@
     outputs.nixosModules.sound
     outputs.nixosModules.printing
 
+    outputs.nixosModules.virtualization-vm
     outputs.nixosModules.containerization
 
     outputs.nixosModules.packages
