@@ -14,7 +14,6 @@
 
     ./hardware-configuration.nix
     ./boot.nix
-    ./build.nix
 
     # Load the NixOS age encryption module to encrypt/decrypt
     # secrets with this NixOS configuration
@@ -35,7 +34,7 @@
     outputs.nixosModules.sound
     outputs.nixosModules.printing
 
-    outputs.nixosModules.virtualization
+    outputs.nixosModules.containerization
 
     outputs.nixosModules.packages
     outputs.nixosModules.programs

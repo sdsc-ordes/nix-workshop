@@ -19,6 +19,7 @@
   time = import ./time.nix;
   user = import ./user.nix;
   virtualization = import ./virtualization.nix;
+  containerization = import ./containerization.nix;
   windowing = import ./windowing.nix;
 
   settings = import ./settings.nix;

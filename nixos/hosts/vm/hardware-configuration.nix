@@ -11,7 +11,9 @@
 }:
 {
   imports = [
-    (modulesPath + "/profiles/qemu-guest.nix")
+    (modulesPath + "/virtualisation/qemu-vm.nix")
+    ./hardware-disks-ext4.nix
+    ./qemu.nix
   ];
 
   boot.initrd.availableKernelModules = [
@@ -22,7 +24,10 @@
   ];
 
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [
+    "kvm-intel"
+    "kvm-arm"
+  ];
   boot.extraModulePackages = [ ];
 
   # Set the platform where the NixOS configuration will run.
@@ -32,96 +37,7 @@
   # https://github.com/nix-community/disko
   # Examples here: https://github.com/nix-community/disko/tree/master/example
 
-  # For zfs support.
-  networking.hostId = "28099f56";
+  # Basic Disko config (more is in hardware-disks-ext4)
+  disko.memSize = 5000;
 
-  disko.devices = {
-    disk = {
-      root = {
-
-        # The VM image settings.
-        imageName = "root";
-        imageSize = "20G";
-
-        type = "disk";
-        device = lib.mkDefault "/dev/vda";
-        content = {
-          type = "gpt";
-          partitions = {
-            boot = {
-              name = "boot";
-              size = "1M";
-              type = "EF02";
-            };
-            esp = {
-              size = "512M";
-              type = "EF00";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot";
-                mountOptions = [ "nofail" ];
-              };
-            };
-            zfs = {
-              size = "100%";
-              content = {
-                type = "zfs";
-                pool = "zroot";
-              };
-            };
-          };
-        };
-      };
-    };
-
-    zpool = {
-      zroot = {
-        type = "zpool";
-        rootFsOptions = {
-          mountpoint = "none";
-          compression = "zstd";
-          acltype = "posixacl";
-          xattr = "sa";
-          "com.sun:auto-snapshot" = "true";
-        };
-        options.ashift = "12";
-        datasets = {
-          "root" = {
-            type = "zfs_fs";
-            options = {
-              # encryption = "aes-256-gcm";
-              # keyformat = "passphrase";
-              # keylocation = "prompt";
-            };
-            mountpoint = "/";
-
-          };
-          "root/nix" = {
-            type = "zfs_fs";
-            options.mountpoint = "/nix";
-            mountpoint = "/nix";
-          };
-
-          # README MORE: https://wiki.archlinux.org/title/ZFS#Swap_volume
-          "root/swap" = {
-            type = "zfs_volume";
-            size = "1G";
-            content = {
-              type = "swap";
-            };
-            options = {
-              volblocksize = "4096";
-              compression = "zle";
-              logbias = "throughput";
-              sync = "always";
-              primarycache = "metadata";
-              secondarycache = "none";
-              "com.sun:auto-snapshot" = "false";
-            };
-          };
-        };
-      };
-    };
-  };
 }

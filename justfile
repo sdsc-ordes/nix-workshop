@@ -47,7 +47,8 @@ build *args:
         ".#nixosConfigurations.$host.config.system.build.diskoImagesScript" |& \
         nom --json
 
-    sudo ./build/disko-image-script --build-memory 2048
+    cd build
+    sudo ./disko-image-script --build-memory 2048
 
 
 # Run the NixOS VM image directly for `host` (`$1`) into the link `build/nixos-$host`.
@@ -58,8 +59,7 @@ run *args:
 
     nix run \
         --show-trace --verbose --log-format internal-json \
-        "$@" \
-        ".#nixosConfigurations.$host.config.system.build.vmWithDisko" |& \
+        ".#nixosConfigurations.$host.config.system.build.vmWithDisko" "$@" |& \
         nom --json
 
 # Switch the `host` (`$1`) to the latest configuration.
