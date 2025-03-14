@@ -79,8 +79,7 @@
       # This is a function that generates an attribute by calling a function you
       # pass to it, with each system as an argument
       forAllSystems = nixpkgs.lib.genAttrs systems;
-    in
-    {
+
       # Your custom packages: Accessible through 'nix build', 'nix shell', etc.
       packages = forAllSystems (system: (import ./pkgs) nixpkgs.legacyPackages.${system});
 
@@ -101,12 +100,26 @@
       # Reusable nixos modules you might want to export.
       nixosModules = import ./modules/nixos;
 
-      # Reusable home-manager modules you might want to export.
-      homeManagerModules = import ./modules/home;
-
       # NixOS configuration entrypoint: Available through 'nixos-rebuild --flake .#your-hostname'
       nixosConfigurations = import ./nixos { inherit inputs outputs; };
 
+      # The deploy configuration for `deploy-rs` tool to
+      # push the VM to the cloud.
+      deploy = {
+        nodes.workshop-cloud-vm = {
+          hostname = "workshop-cloud-vm";
+          fastConnection = true;
+          profiles = {
+            system = {
+              user = "root";
+              sshUser = "root";
+              path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos nixosConfigurations.vm;
+            };
+          };
+        };
+      };
+
+      # Development shell to work in this repository.
       devShells = forAllSystems (
         system:
         let
@@ -121,5 +134,15 @@
           };
         }
       );
+    in
+    {
+      inherit
+        packages
+        overlays
+        nixosModules
+        nixosConfigurations
+        deploy
+        devShells
+        ;
     };
 }
