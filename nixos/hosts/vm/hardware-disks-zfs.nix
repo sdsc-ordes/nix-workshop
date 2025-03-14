@@ -9,7 +9,7 @@
 
         # The VM image settings.
         imageName = "root";
-        imageSize = "10G";
+        imageSize = "20G";
 
         type = "disk";
         device = lib.mkDefault "/dev/vda";

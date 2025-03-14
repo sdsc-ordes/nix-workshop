@@ -106,5 +106,20 @@
 
       # NixOS configuration entrypoint: Available through 'nixos-rebuild --flake .#your-hostname'
       nixosConfigurations = import ./nixos { inherit inputs outputs; };
+
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = (import inputs.nixpkgsUnstable) { };
+        in
+        {
+          default = pkgs.mkShell {
+            packages = [
+              pkgs.nix-output-monitor
+              pkgs.just
+            ];
+          };
+        }
+      );
     };
 }

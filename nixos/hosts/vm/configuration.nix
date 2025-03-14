@@ -69,6 +69,12 @@
     ];
   };
 
+  # Only needed to guard commands in the `justfile` which
+  # are only means to be executed on a NixOS system.
+  environment.variables = {
+    NIXOS_ON_VM = "true";
+  };
+
   ### NixOS Release Settings===================================================
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

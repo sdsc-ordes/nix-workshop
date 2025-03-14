@@ -16,23 +16,20 @@ format:
     cd "{{root_dir}}" && \
       nix fmt
 
-## Flake maintenance commands =================================================
-# Update the flake lock file, use `update-single` for updating a single input.
-update *args:
-    cd "{{root_dir}}" && nix flake update "$@"
-
-# Update a single input in the lock file.
-update-single *args:
-    cd "{{root_dir}}" && nix flake lock --update-input "$@"
-
-## NixOS Commands to execute on NixOS systems =================================
-# Prints the NixOS version (based on nixpkgs repository).
-version:
-    nixos-version --revision
-
 # Start the Nix interpreter where this flake is loaded to explore stuff.
 repl:
     nix repl .
+
+# Run the NixOS VM image directly for `host` (`$1`) into the link `build/nixos-$host`.
+run *args:
+    #!/usr/bin/env bash
+    host="${1:-"{{default_host}}"}" && shift 1
+    mkdir -p "{{build_dir}}"
+
+    nix run \
+        --show-trace --verbose --log-format internal-json \
+        ".#nixosConfigurations.$host.config.system.build.vmWithDisko" "$@" |& \
+        nom --json
 
 # Build the NixOS VM image for `host` (`$1`) into the link `build/nixos-$host`.
 build *args:
@@ -50,24 +47,48 @@ build *args:
     cd build
     sudo ./disko-image-script --build-memory 2048
 
+# Run nix-tree to get the tree of all packages and
+# to inspect derivations.
+tree *args:
+    nix-tree "$@"
 
-# Run the NixOS VM image directly for `host` (`$1`) into the link `build/nixos-$host`.
-run *args:
+# Diff closures from `dest_ref` to `src_ref`. This builds and
+# computes the closure which might take some time.
+diff-closure dest_ref="/" src_ref="origin/main" host="{{host}}":
     #!/usr/bin/env bash
-    host="${1:-"{{default_host}}"}" && shift 1
-    mkdir -p "{{build_dir}}"
+    set -eu
 
-    nix run \
-        --show-trace --verbose --log-format internal-json \
-        ".#nixosConfigurations.$host.config.system.build.vmWithDisko" "$@" |& \
-        nom --json
+    host="{{host}}"
+    echo "Diffing closures of host '$host' from '{{src_ref}}' to '{{dest_ref}}'"
+
+    nix store diff-closures \
+        ".?ref={{src_ref}}#nixosConfigurations.$host.config.system.build.toplevel" \
+        ".?ref={{dest_ref}}#nixosConfigurations.$host.config.system.build.toplevel"
+
+## Flake maintenance commands =================================================
+# ==============================================================================
+# Update the flake lock file, use `update-single` for updating a single input.
+update *args:
+    cd "{{root_dir}}" && nix flake update "$@"
+
+# Update a single input in the lock file.
+update-single *args:
+    cd "{{root_dir}}" && nix flake lock --update-input "$@"
+# ==============================================================================
+
+## NixOS Commands to execute ONLY on a NixOS systems ===========================
+# ==============================================================================
+# Prints the NixOS version (based on nixpkgs repository).
+version: check-on-vm
+    nixos-version --revision
+
 
 # Switch the `host` (`$1`) to the latest configuration.
-switch *args:
+switch *args: check-on-vm
     just rebuild switch "${1:-}" "${@:2}"
 
 # Switch the `host` with nix-output-monitor.
-switch-visual *args:
+switch-visual *args: check-on-vm
     #!/usr/bin/env bash
     # We need sudo, because output-monitor will
     # not show the prompt.
@@ -81,27 +102,12 @@ switch-visual *args:
 
 # Switch the `host` (`$1`) to the latest
 # configuration but under boot entry `test`.
-switch-test *args:
+switch-test *args: check-on-vm
     just rebuild switch "${1:-}" -p test "${@:2}"
-
-# NixOS rebuild command for the `host` (defined in the flake).
-[private]
-rebuild how host *args:
-    #!/usr/bin/env bash
-    set -eu
-    cd "{{root_dir}}"
-
-    host="${2:-"{{default_host}}"}"
-
-    echo "----"
-    echo nixos-rebuild {{how}} --flake ".#$host" "${@:3}"
-    echo "----"
-
-    nixos-rebuild {{how}} --flake ".#$host" "${@:3}"
 
 
 # Show the history of the system profile and test profiles.
-history:
+history: check-on-vm
     #!/usr/bin/env bash
     set -eu
     echo "History in 'system' profile:"
@@ -114,12 +120,12 @@ history:
 
 # Run the trim script to reduce the amount of generations kept on the system.
 # Usage with `--help`.
-trim *args:
+trim *args: check-on-vm
     ./scripts/trim-generations.sh {{args}}
 
 # Diff the profile `current-system` with the last system profile
 # to see the differences.
-diff last="1" current_profile="/run/current-system":
+diff last="1" current_profile="/run/current-system": check-on-vm
     #!/usr/bin/env bash
     set -eu
 
@@ -154,25 +160,8 @@ diff last="1" current_profile="/run/current-system":
 
     nvd diff "$last_profile" "$current_profile"
 
-# Diff closures from `dest_ref` to `src_ref`. This builds and
-# computes the closure which might take some time.
-diff-closure dest_ref="/" src_ref="origin/main" host="{{host}}":
-    #!/usr/bin/env bash
-    set -eu
-
-    host="{{host}}"
-    echo "Diffing closures of host '$host' from '{{src_ref}}' to '{{dest_ref}}'"
-
-    nix store diff-closures \
-        ".?ref={{src_ref}}#nixosConfigurations.$host.config.system.build.toplevel" \
-        ".?ref={{dest_ref}}#nixosConfigurations.$host.config.system.build.toplevel"
-
-# Run nix-tree to get the tree of all packages.
-tree *args:
-    nix-tree "$@"
-
 # Run Nix garbage-collection on the system-profile.
-gc:
+gc: check-on-vm
     echo "Remove test profile"
     sudo rm -rf /nix/var/nix/profiles/system-profile/test
 
@@ -181,3 +170,25 @@ gc:
 
     echo "Garbage collect all unused nix store entries"
     sudo nix store gc --debug
+
+# NixOS rebuild command for the `host` (defined in the flake).
+[private]
+rebuild how host *args: check-on-vm
+    #!/usr/bin/env bash
+    set -eu
+    cd "{{root_dir}}"
+
+    host="${2:-"{{default_host}}"}"
+
+    echo "----"
+    echo nixos-rebuild {{how}} --flake ".#$host" "${@:3}"
+    echo "----"
+
+    nixos-rebuild {{how}} --flake ".#$host" "${@:3}"
+
+[private]
+check-on-vm:
+    [ "${NIXOS_ON_VM:-}" = "true" ] || { \
+        echo "You should only run this command inside the NixOS VM." &>2 \
+    }
+# ==============================================================================

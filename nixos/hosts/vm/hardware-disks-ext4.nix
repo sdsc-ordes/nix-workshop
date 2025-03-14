@@ -5,7 +5,7 @@
       root = {
         # The VM image settings.
         imageName = "root";
-        imageSize = "10G";
+        imageSize = "20G";
 
         device = "/dev/vda";
         type = "disk";
