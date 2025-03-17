@@ -1,3 +1,5 @@
+.direnv
+.env
+
 build
 result
-.env
