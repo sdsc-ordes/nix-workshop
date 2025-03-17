@@ -22,20 +22,20 @@
     # Include all other specifications.
     (outputs.nixosModules.windowing { inherit config pkgs; })
     outputs.nixosModules.display
-    outputs.nixosModules.keyboard
+    #outputs.nixosModules.keyboard
     outputs.nixosModules.fonts
     outputs.nixosModules.time
     outputs.nixosModules.environment
     outputs.nixosModules.networking
-    outputs.nixosModules.security
+    #outputs.nixosModules.security
 
     outputs.nixosModules.services
 
     outputs.nixosModules.sound
     outputs.nixosModules.printing
 
-    outputs.nixosModules.virtualization-vm
-    outputs.nixosModules.containerization
+    #outputs.nixosModules.virtualization-vm
+    #outputs.nixosModules.containerization
 
     outputs.nixosModules.packages
     outputs.nixosModules.programs

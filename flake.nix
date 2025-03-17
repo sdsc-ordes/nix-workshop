@@ -18,7 +18,9 @@
 
   inputs = {
     # Nixpkgs (stuff for the system.)
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs = {
+      url = "github:nixos/nixpkgs/nixos-24.11";
+    };
 
     # Nixpkgs (unstable stuff for certain packages.)
     # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
@@ -123,7 +125,9 @@
       devShells = forAllSystems (
         system:
         let
-          pkgs = (import inputs.nixpkgsUnstable) { };
+          pkgs = (import inputs.nixpkgsUnstable) { 
+             config.allowBroken = true;
+          };
         in
         {
           default = pkgs.mkShell {

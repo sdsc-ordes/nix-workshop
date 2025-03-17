@@ -28,7 +28,7 @@
   boot.extraModulePackages = [ ];
 
   # Set the platform where the NixOS configuration will run.
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 
   # Configure the disks with disko:
   # https://github.com/nix-community/disko

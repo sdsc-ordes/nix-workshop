@@ -9,7 +9,7 @@ let
   nixosConfigurations = {
     # The NixOS running on a VM.
     vm = nixosSystem {
-      system = "x86_64-linux";
+      system = "aarch64-linux";
 
       # The Nix module system can modularize configuration,
       # improving the maintainability of configuration.
@@ -54,6 +54,11 @@ let
       # you must use `specialArgs` by uncomment the following line:
       modules = [
         ./hosts/vm/configuration.nix
+
+        ({ config, pkgs, ... }: {
+            nixpkgs.config.allowBroken = true;
+        })
+
       ];
       specialArgs = {
         inherit inputs outputs;

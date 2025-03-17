@@ -38,8 +38,10 @@ build *args:
     host="${1:-"{{default_host}}"}" && shift 1
     mkdir -p "{{build_dir}}"
     cd build
-
+    
+    export NIXPKGS_ALLOW_BROKEN=1
     nix build \
+        --impure \
         --out-link "{{build_dir}}/disko-image-script" \
         --show-trace --verbose --log-format internal-json \
         "$@" \
