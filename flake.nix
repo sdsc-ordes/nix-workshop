@@ -123,7 +123,7 @@
       devShells = forAllSystems (
         system:
         let
-          pkgs = (import inputs.nixpkgsUnstable) { };
+          pkgs = (import inputs.nixpkgsUnstable) { inherit system; };
         in
         {
           default = pkgs.mkShell {
