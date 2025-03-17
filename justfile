@@ -5,7 +5,7 @@ root_dir := justfile_directory()
 build_dir := root_dir / "build"
 
 # The host for which most commands work below.
-default_host := env("NIXOS_HOST", "desktop")
+default_host := env("NIXOS_HOST", "vm")
 
 # Default command to list all commands.
 list:
