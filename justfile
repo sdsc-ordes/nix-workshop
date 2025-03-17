@@ -11,6 +11,10 @@ default_host := env("NIXOS_HOST", "vm")
 list:
     just --list
 
+# Start a Nix dev. shell to work in this repository.
+develop *args:
+    just nix-develop "default" "$@"
+
 # Format the whole repository.
 format:
     cd "{{root_dir}}" && \
@@ -192,4 +196,20 @@ check-on-vm:
     [ "${NIXOS_ON_VM:-}" = "true" ] || { \
         echo "You should only run this command inside the NixOS VM." &>2 \
     }
+
+
+# Enter the nix development shell `$1` and execute the command `${@:2}`.
+[private]
+nix-develop *args:
+    #!/usr/bin/env bash
+    set -eu
+    cd "{{root_dir}}"
+    shell="$1"; shift 1;
+    args=("$@") && [ "${#args[@]}" != 0 ] || args="$shell"
+    nix develop \
+        --accept-flake-config \
+        --override-input devenv-root "path:.devenv/state/pwd" \
+        "{{flake_dir}}#$shell" \
+        --command "${args[@]}"
+
 # ==============================================================================
