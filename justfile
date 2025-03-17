@@ -3,6 +3,7 @@ set dotenv-load := true
 set shell := ["bash", "-cue"]
 root_dir := justfile_directory()
 build_dir := root_dir / "build"
+flake_dir := root_dir
 
 # The host for which most commands work below.
 default_host := env("NIXOS_HOST", "vm")
