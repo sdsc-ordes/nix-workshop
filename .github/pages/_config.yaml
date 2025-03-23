@@ -1,4 +1,5 @@
 theme: jekyll-theme-primer
+repository: sdsc-ordes/nixos-workshop
 markdown: GFM
 
 plugins:
@@ -10,20 +11,5 @@ kramdown:
     line_numbers: table
     bold_every: 5
 
-exclude:
-  - "**/*.ts" # Exclude source code files!
-  - "**/*.js"
-  - "*.ts" # Also those in the root directory!
-  - "*.js"
-  - "*.json" # Don't forget about assets!
-  - node_modules/ # And large vendored directories
-  # And these ignore all the artifacts the build produces:
-  - .sass-cache/
-  - .jekyll-cache/
-  - gemfiles/
-  - Gemfile
-  - Gemfile.lock
-  - vendor/bundle/
-  - vendor/cache/
-  - vendor/gems/
-  - vendor/ruby/
+include:
+  - README.md
