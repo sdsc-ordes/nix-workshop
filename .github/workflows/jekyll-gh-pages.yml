@@ -28,6 +28,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set Jekyll theme
+        run: |
+          echo "
+          theme: jekyll-theme-primer
+          markdown: GFM
+          " > _config.yaml
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
