@@ -1,5 +1,14 @@
+# General
 .direnv
+.devenv
+
+# Env files.
 .env
 
+# Build output.
 build
 result
+
+# VM Image files.
+*.qcow
+*.raw
