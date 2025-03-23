@@ -56,33 +56,35 @@
     # })
   ];
 
-  nixpkgs = {
-    # You can add overlays here.
-    overlays = [
-      # NOTE: We are not eagerly using overlays so far, we pass inputs directly to modules.
-      #       Overlays is a recursive mechanism which is only used when a
-      #       package needs to be overwrittern globally.
+  config = {
+    nixpkgs = {
+      # You can add overlays here.
+      overlays = [
+        # NOTE: We are not eagerly using overlays so far, we pass inputs directly to modules.
+        #       Overlays is a recursive mechanism which is only used when a
+        #       package needs to be overwrittern globally.
 
-      # Add overlays of your own flake exports (from overlays and pkgs dir):
-      outputs.overlays.additions
-      outputs.overlays.modifications
-      outputs.overlays.unstable
-    ];
+        # Add overlays of your own flake exports (from overlays and pkgs dir):
+        outputs.overlays.additions
+        outputs.overlays.modifications
+        outputs.overlays.unstable
+      ];
+    };
+
+    # Only needed to guard commands in the `justfile` which
+    # are only means to be executed on a NixOS system.
+    environment.variables = {
+      NIXOS_ON_VM = "true";
+    };
+
+    ### NixOS Release Settings===================================================
+    # This value determines the NixOS release from which the default
+    # settings for stateful data, like file locations and database versions
+    # on your system were taken. It‘s perfectly fine and recommended to leave
+    # this value at the release version of the first install of this system.
+    # Before changing this value read the documentation for this option
+    # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+    system.stateVersion = "24.11";
+    # ===========================================================================
   };
-
-  # Only needed to guard commands in the `justfile` which
-  # are only means to be executed on a NixOS system.
-  environment.variables = {
-    NIXOS_ON_VM = "true";
-  };
-
-  ### NixOS Release Settings===================================================
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11";
-  # ===========================================================================
 }

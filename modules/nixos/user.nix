@@ -8,6 +8,8 @@ let
 in
 {
   ### User Settings ==========================================================
+  programs.zsh.enable = true;
+
   users = {
     users.${settings.user.name} = {
       shell = pkgs.zsh;

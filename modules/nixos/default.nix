@@ -8,6 +8,7 @@
   fonts = import ./fonts.nix;
   home-manager = import ./home-manager.nix;
   keyboard = import ./keyboard.nix;
+  keyboard-simple = import ./keyboard-simple.nix;
   networking = import ./networking.nix;
   nix = import ./nix.nix;
   packages = import ./packages.nix;
