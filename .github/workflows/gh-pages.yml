@@ -31,10 +31,8 @@ jobs:
 
       - name: Set Jekyll theme
         run: |
-          echo "
-          theme: jekyll-theme-primer
-          markdown: GFM
-          " > _config.yaml
+          cp ./.github/pages/_config.yaml ./
+          cp ./.github/pages/Gemfile ./
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
