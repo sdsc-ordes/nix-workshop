@@ -1,5 +1,5 @@
 theme: jekyll-theme-primer
-repository: sdsc-ordes/nixos-workshop
+repository: https://github.com/sdsc-ordes/nixos-workshop
 markdown: GFM
 
 plugins:
