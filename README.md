@@ -136,6 +136,37 @@ Each `flake.nix` file consists of a **single attribute set**, containing:
 For example, outputs such as `outputs.x86_64-linux.packages = ...` typically
 define Nix **derivations**, which are the core building blocks of Nix packages.
 
+#### How to Inspect a Flake?
+
+You can run the Nix interpreter and load a flake in directory `.` and use tab
+completion on output attributes like so:
+
+```bash
+nix repl .
+
+> Nix 2.24.11
+> Type :? for help.
+> warning: Git tree '/persist/repos/nixos-workshop' is dirty
+> Loading installable 'git+file:///persist/repos/nixos-workshop#'...
+> Added 7 variables.
+> nix-repl> # Type 'devShells.<TAB><TAB>'
+```
+
+Another method is to start the `nix repl` and then type `:lf .` which is almost
+the same except that the available attributes are now `inputs` and `outputs`:
+
+```bash
+nix repl
+
+> Nix 2.24.11
+> Type :? for help.
+> nix-repl> # Type ':lf .'
+
+> warning: Git tree '/persist/repos/nixos-workshop' is dirty
+> Added 18 variables.
+> nix-repl> # Type 'outputs.devShells.<TAB><TAB>'
+```
+
 ---
 
 ### What is a Nix Derivation?

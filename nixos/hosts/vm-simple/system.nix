@@ -12,7 +12,7 @@ in
       keyMap = "us";
     };
 
-    virtualization.graphics = false;
+    virtualisation.graphics = false;
 
     programs.zsh.enable = true;
 
