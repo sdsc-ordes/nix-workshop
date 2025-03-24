@@ -8,18 +8,19 @@
 
 > [!CAUTION]
 >
-> This workshop is not finished, and under current development. Don't read it!
+> This workshop is currently under development and is not yet complete. Please
+> refrain from reading it!
 
-This workshop targets the building and running of a simple NixOS. It its meant
-to give you a **minimal, brute-force** introduction to how Nix/NixOS works. A
-lot of explanations are short but hopefully precise enough to make you
-understand the goal of this workshop:
+This workshop focuses on building and running a basic NixOS system. It is
+designed to provide a **minimal, hands-on** introduction to how Nix/NixOS works.
+While explanations are concise, they aim to be precise enough to help you grasp
+the objectives of this workshop:
 
-- Basic understanding of the Nix language.
-- Understanding of what a `flake.nix` is.
-- Understanding what a Nix derivation is and what its realization looks like.
+- Gain a basic understanding of the Nix language.
+- Learn what a `flake.nix` file is.
+- Understand what a Nix derivation is and how it materializes.
 - Configure and build a NixOS system.
-- Deploy it to a Cloud VM.
+- Deploy it to a cloud VM.
 
 <!-- prettier-ignore-start -->
 <!--toc:start-->
@@ -39,48 +40,47 @@ understand the goal of this workshop:
 
 > [!TIP]
 >
-> Most links with further reads and videos are due to the lack of good &
-> centralized official documentation on Nix topics. This makes also starting to
-> learn Nix pretty uneasy. However, we try to link always to official
-> documentation if it makes sense. Some links we use in the following are:
+> Due to the lack of well-structured and centralized official documentation on
+> Nix topics, many external links to additional reading materials and videos are
+> provided. Learning Nix can be challenging, but we prioritize linking to
+> official documentation whenever relevant. Some useful resources include:
 >
 > - [NixOS Manual](https://nixos.org/manual/nixos/stable/)
 > - [NixOS Options Search](https://search.nixos.org/options?)
 > - [Nix Packages Search](https://search.nixos.org/packages?)
-> - [Nixpks-Lib Function Search](https://noogle.dev/)
+> - [Nixpkgs-Lib Function Search](https://noogle.dev/)
 > - [NixOS With Flakes](https://nixos-and-flakes.thiscute.world/nixos-with-flakes)
 > - [NixOS Status](https://status.nixos.org/)
-> - [Nixpkgs Pullrequest Tracker](https://nixpk.gs/pr-tracker.html)
+> - [Nixpkgs Pull Request Tracker](https://nixpk.gs/pr-tracker.html)
 
 ## Requirements
 
-Make sure you installed
+Ensure that you have installed
 [`Nix`](https://swissdatasciencecenter.github.io/best-practice-documentation/docs/dev-enablement/nix-and-nixos#installing-nix)
 and
 [`direnv`](https://swissdatasciencecenter.github.io/best-practice-documentation/docs/dev-enablement/nix-and-nixos#installing-direnv).
 
-The basic requirements for working in this repository are:
+The basic requirements for working with this repository are:
 
 - `just`
 - `nix`
 
 ## Introduction
 
-Nix is a simple functional language which is almost similar to JSON with
-functions. It has basic types like `string`s, `integers`, `paths`, `list`s and
-`attribute set`s, (further
-[read](https://nixos.org/guides/nix-pills/04-basics-of-language.html#basics-of-language)).
+Nix is a simple functional language, structurally similar to JSON but with
+functions. It supports fundamental data types such as `string`s, `integers`,
+`paths`, `lists`, and `attribute sets`. For a more detailed explanation, see
+[Nix Language Basics](https://nixos.org/guides/nix-pills/04-basics-of-language.html#basics-of-language).
 
 > [!CAUTION]
 >
-> The Nix language has its purpose and target towards deterministically building
-> & distributing software and therefore is a very narrowly scoped language. That
-> means you also don't find floating-point types etc. because it has little
-> benefit in this context.
+> The Nix language is specifically designed for deterministic software building
+> and distribution. Due to its narrow scope, it lacks certain features, such as
+> floating-point types, which are unnecessary in this context.
 
-When you look at most Nix files `*.nix` in this and other repositories, they
-will most always contain a function (further
-[read](https://nixos.org/guides/nix-pills/05-functions-and-imports.html)).
+Most `*.nix` files in this and other repositories define functions. You can
+learn more about functions in Nix from
+[this guide](https://nixos.org/guides/nix-pills/05-functions-and-imports.html).
 
 For example, the function `args: /* implementation */` in `myfunction.nix` takes
 one argument `args` and returns an attribute set `{ val1 = ... }`:
@@ -89,21 +89,12 @@ one argument `args` and returns an attribute set `{ val1 = ... }`:
 # File: `myfunction.nix`:
 args:
 let
-  # A number.
-  aNumber = 1;
-
-  # A list with 4 elements.
-  aList = [ 1 2 3 "help"];
-
-  # A attribute set (key, value map) with two elements,
-  # a number and a list.
-  anAttrSet = { a = 1; b.c.d = [1]; };
-
-  # Calling another function `args.myFunc` (it needs to be defined in `args`)
-  # with an attribute set as input.
-  result = args.myFunc { val1 = aNumber;};
+  aNumber = 1;  # A number.
+  aList = [ 1 2 3 "help"];  # A list with 4 elements.
+  anAttrSet = { a = 1; b.c.d = [1]; };  # A nested attribute set.
+  result = args.myFunc { val1 = aNumber; };  # Calls another function `args.myFunc`.
 in
-{ val1 = aNumber; val2 = anAttrSet.b.c.d; val3 = result;}
+{ val1 = aNumber; val2 = anAttrSet.b.c.d; val3 = result; }
 ```
 
 Watch this [short introduction](https://www.youtube.com/watch?v=HiTgbsFlPzs) to
@@ -112,65 +103,82 @@ get a better understanding on this basic building block.
 All `*.nix` files you explore in this repository are exactly similar but the
 attribute set they return will be specific to what the
 [NixOS module system](https://nixos.org/manual/nixos/stable/#sec-writing-modules)
-expects.
+expects. More to that later.
 
-### Whats a Flake `flake.nix`
+Here's an improved version with better readability, clarity, and flow:
 
-A [`flake.nix`](./flake.nix) is a deterministic way
-([`flake.lock`](./flake.lock)) to load other Nix functions - called
-[**inputs**](https://nixos-and-flakes.thiscute.world/nixos-with-flakes/nixos-flake-configuration-explained#_1-flake-inputs) -
-from other repositories/files or URLs and define
-[ **outputs** ](https://nixos-and-flakes.thiscute.world/nixos-with-flakes/nixos-flake-configuration-explained#_2-flake-outputs).
-A [`flake.nix`](./flake.nix) is a Nix file which contains one attribute set. .
+---
 
-Each `flake.nix` can define a set of inputs in an `inputs` attribute and also
-define a bunch of outputs in the `outputs` attribute. The `outputs` attribute is
-a function which takes all `inputs` and must return an
-[attribute set of the following shape](https://nixos-and-flakes.thiscute.world/other-usage-of-flakes/outputs).
-What you return in `outputs` (e.g. `outputs.x86_64-linux.packages = ...`) are
-mostly Nix **derivations**.
+### What is a Flake? (`flake.nix`)
 
-### Whats a Nix Derivation?
+A [`flake.nix`](./flake.nix) provides a **deterministic** way to manage
+dependencies and configurations in Nix. It references external Nix
+functions—called
+[**inputs**](https://nixos-and-flakes.thiscute.world/nixos-with-flakes/nixos-flake-configuration-explained#_1-flake-inputs)—which
+are fetched from other repositories, local files, or URLs. It also defines
+structured
+[**outputs**](https://nixos-and-flakes.thiscute.world/nixos-with-flakes/nixos-flake-configuration-explained#_2-flake-outputs),
+specifying what the flake provides.
 
-A [derivation](https://nix.dev/manual/nix/2.24/glossary#gloss-derivation) is in
-its raw-form an **attribute set** (e.g. `{ type = "derivation"; ... }`) with
-special shape and builtin meaning (further
-[watch](https://www.youtube.com/watch?v=WT75jfETWRg)).
+Each `flake.nix` file consists of a **single attribute set**, containing:
 
-> A derivation is an instruction that Nix uses to realise a Nix package. They’re
-> created using a special derivation function in the Nix language. They can
-> depend on any number of other derivations and produce one or more final
-> outputs. A derivation and all of the dependencies required to build it —
-> direct dependencies, and all dependencies of those dependencies, etc — is
-> called a closure. [\[Ref\]](https://zero-to-nix.com/concepts/derivations)
+- **Inputs**: Defined in the `inputs` attribute, listing dependencies the flake
+  relies on.
+- **Outputs**: A function that takes `inputs` and returns an
+  [attribute set](https://nixos-and-flakes.thiscute.world/other-usage-of-flakes/outputs),
+  specifying what the flake provides (e.g., packages, modules, or NixOS
+  configurations).
 
-When the Nix interpreter evaluates a derivation, it always stores it in the Nix
-store (`/nix/store`) as a side-effect - producing a
-[_store derivation_](https://nix.dev/manual/nix/2.24/glossary#gloss-store-derivation).
+For example, outputs such as `outputs.x86_64-linux.packages = ...` typically
+define Nix **derivations**, which are the core building blocks of Nix packages.
 
-The following will evaluate the path `formatter.x86_64-linux` in `outputs` of
-this repository's [`flake.nix`](./flake.nix) and then print its content:
+---
+
+### What is a Nix Derivation?
+
+A [derivation](https://nix.dev/manual/nix/2.24/glossary#gloss-derivation) is a
+**specialized attribute set** that describes how to build a Nix package. In raw
+form, it looks like `{ type = "derivation"; ... }` and carries a well-defined
+structure with built-in meaning.
+
+> A derivation is an instruction that Nix uses to realize a package. Created
+> using a special `derivation` function in the Nix language, it can depend on
+> multiple other derivations and produce one or more outputs. The complete set
+> of dependencies required to build a derivation—including its transitive
+> dependencies—is called a **closure**.
+> [\[Ref\]](https://zero-to-nix.com/concepts/derivations)
+
+When Nix evaluates a derivation, it stores the result in the Nix store
+(`/nix/store`) as a **store derivation**
+([more details](https://nix.dev/manual/nix/2.24/glossary#gloss-store-derivation)).
+
+To inspect the `formatter.x86_64-linux` output from this repository’s
+[`flake.nix`](./flake.nix), run the following command:
 
 ```bash
-nix eval ".#formatter.x86_64-linux"
+nix eval .#formatter.x86_64-linux
 
 > «derivation /nix/store/72zknv2ssr8pkvf5jrc0g5w64bqjvyq1-treefmt.drv»
+```
 
+```bash
 cat /nix/store/72zknv2ssr8pkvf5jrc0g5w64bqjvyq1-treefmt.drv
 
 > Derive([("out","/nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt","","")],[("/nix/store/1fmb3b4cmr1bl1v6vgr8plw15rqw5jhf-treefmt.toml.drv",["out"]),("/nix/store/3avbfsh9rjq8psqbbplv2da6dr679cib-treefmt-2.1.0.drv",["out"]),("/nix/store/61fjldjpjn6n8b037xkvvrgjv4q8myhl-bash-5.2p37.drv",["out"]),("/nix/store/gp6gh2jn0x7y7shdvvwxlza4r5bmh211-stdenv-linux.drv",["out"])],["/nix/store/v6x3cs394jgqfbi0a42pam708flxaphh-default-builder.sh"],"x86_64-linux","/nix/store/8vpg72ik2kgxfj05lc56hkqrdrfl8xi9-bash-5.2p37/bin/bash",["-e","/nix/store/v6x3cs394jgqfbi0a42pam708flxaphh-default-builder.sh"],[("__structuredAttrs",""),("allowSubstitutes",""),("buildCommand","target=$out/bin/treefmt\nmkdir -p \"$(dirname \"$target\")\"\n\nif [ -e \"$textPath\" ]; then\n  mv \"$textPath\" \"$target\"\nelse\n  echo -n \"$text\" > \"$target\"\nfi\n\nif [ -n \"$executable\" ]; then\n  chmod +x \"$target\"\nfi\n\neval \"$checkPhase\"\n"),("buildInputs",""),("builder","/nix/store/8vpg72ik2kgxfj05lc56hkqrdrfl8xi9-bash-5.2p37/bin/bash"),("checkPhase","/nix/store/8vpg72ik2kgxfj05lc56hkqrdrfl8xi9-bash-5.2p37/bin/bash -n -O extglob \"$target\"\n"),("cmakeFlags",""),("configureFlags",""),("depsBuildBuild",""),("depsBuildBuildPropagated",""),("depsBuildTarget",""),("depsBuildTargetPropagated",""),("depsHostHost",""),("depsHostHostPropagated",""),("depsTargetTarget",""),("depsTargetTargetPropagated",""),("doCheck",""),("doInstallCheck",""),("enableParallelBuilding","1"),("enableParallelChecking","1"),("enableParallelInstalling","1"),("executable","1"),("mesonFlags",""),("name","treefmt"),("nativeBuildInputs",""),("out","/nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt"),("outputs","out"),("passAsFile","buildCommand text"),("patches",""),("preferLocalBuild","1"),("propagatedBuildInputs",""),("propagatedNativeBuildInputs",""),("stdenv","/nix/store/hsxp8g7zdr6wxk1mp812g8nbzvajzn4w-stdenv-linux"),("strictDeps",""),("system","x86_64-linux"),("text","#!/nix/store/8vpg72ik2kgxfj05lc56hkqrdrfl8xi9-bash-5.2p37/bin/bash\nset -euo pipefail\nunset PRJ_ROOT\nexec /nix/store/0jcp33pgf85arjv3nbghws34mrmy7qq5-treefmt-2.1.0/bin/treefmt \\\n  --config-file=/nix/store/qk8rqccch6slk037dhnprryqwi8mv0xs-treefmt.toml \\\n  --tree-root-file=.git/config \\\n  \"$@\"\n\n")])
 ```
 
-The `cat` output above is the internal serialization of the derivation of the
-formatter which **when built** can be used to format all files in this
-repository.
+The output of `/nix/store/72zknv2ssr8pkvf5jrc0g5w64bqjvyq1-treefmt.drv` above is
+the internal serialization of the formatter's derivation which **when built**
+can be used to format all files in this repository.
 
-**Note:** A derivation contains only build instruction to fully describe what it
-will build. This can be literally anything, e.g. a software package, a wrapper
-shell script or only only source files.
+> [!NOTE]
+>
+> A derivation contains only build instructions for Nix to realize/build it.
+> This can be literally anything, e.g. a software package, a wrapper shell
+> script or only source files.
 
-We can build the above derivation - or in other terms realize it in the Nix
-store - by doing:
+We can build the above derivation - or in other terms **realize it in the Nix
+store** - by doing:
 
 ```bash
 nix build /nix/store/72zknv2ssr8pkvf5jrc0g5w64bqjvyq1-treefmt.drv
@@ -179,7 +187,8 @@ nix build /nix/store/72zknv2ssr8pkvf5jrc0g5w64bqjvyq1-treefmt.drv
 or
 
 ```bash
-nix build ".#formatter.x86_64-linux" # Use quoted strings here (`zsh` interprets # differently!"
+nix build ".#formatter.x86_64-linux"
+# Use quoted strings here (`zsh` interprets # differently!"
 ```
 
 This will by default produce a symlink `./result` pointing to the Nix store
@@ -198,32 +207,43 @@ tree /nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt
 >     └── treefmt
 ```
 
-You can of course run it by doing
-`/nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt/bin/treefmt -h`.
+You can run it by doing
 
-### Whats an Installable?
+```bash
+nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt/bin/treefmt -h
+```
 
-The path `.#formatter.x86_64-linux.treefmt` in the previous section is commonly
-referred to as a
-[Flake output attribute installable](https://nix.dev/manual/nix/2.24/command-ref/new-cli/nix#flake-output-attribute)
-under the general term
+---
+
+### What is an Installable?
+
+The path `.#formatter.x86_64-linux.treefmt` mentioned in the previous section is
+commonly referred to as a
+[Flake output attribute installable](https://nix.dev/manual/nix/2.24/command-ref/new-cli/nix#flake-output-attribute),
+or simply an
 [_installable_](https://nix.dev/manual/nix/2.24/command-ref/new-cli/nix#installables).
-An _installable_ is something you can realize in the Nix store.
 
-The path `.#formatter.x86_64-linux.treefmt` refers to this repository's
-[./flake.nix](./flake.nix) by the part `.` and its output attribute
-`formatter.x86_64-linux`.
+An **installable** is any Flake output that can be realized in the Nix store.
+
+Breaking down `.#formatter.x86_64-linux.treefmt`:
+
+- `.` refers to this repository’s [`flake.nix`](./flake.nix).
+- `formatter.x86_64-linux.treefmt` following `#` is an output attribute defined
+  within the flake.
 
 Most
 [modern Nix commands](https://nix.dev/manual/nix/2.24/command-ref/experimental-commands)
-take installables as input.
+accept installables as input, making them a fundamental concept in working with
+Flakes.
 
 > [!TIP]
 >
-> Even tough Nix Flakes are still experimental, there is
-> [no harm in using them](https://jade.fyi/blog/flakes-arent-real) as they will
-> get eventually stabilized although their controversial discussion in the Nix
-> community.
+> Although Nix Flakes are still considered experimental,
+> [there's no harm in using them](https://jade.fyi/blog/flakes-arent-real).
+> Despite ongoing discussions within the Nix community, Flakes are expected to
+> be stabilized in the future.
+
+---
 
 ### NixOS
 
