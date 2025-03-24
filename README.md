@@ -136,7 +136,7 @@ Each `flake.nix` file consists of a **single attribute set**, containing:
 For example, outputs such as `outputs.x86_64-linux.packages = ...` typically
 define Nix **derivations**, which are the core building blocks of Nix packages.
 
-#### How to Inspect a Flake?
+### How to Inspect a Flake?
 
 You can run the Nix interpreter and load a flake in directory `.` and use tab
 completion on output attributes like so:
@@ -354,6 +354,10 @@ restart the appropriate `systemd` services.
 The next section explains how to build/run & understand a simple NixOS VM setup.
 
 ## Build/Run & Understand a Simple VM
+
+First familiar yourself with the commands on the [`justfile`](./justfile) with
+by running `just`. The `build` and `repl` commands, we have covered in the
+introduction.
 
 In this example we are going to build a simple VM with just a user `nixos` and
 without a graphical desktop environment.
