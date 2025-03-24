@@ -100,12 +100,16 @@ in
 Watch this [short introduction](https://www.youtube.com/watch?v=HiTgbsFlPzs) to
 get a better understanding on this basic building block.
 
+> [!TIP]
+>
+> In Nix world everything is a function. And to to procedural-like statements
+> you use `let ... in` blocks as shown above to better structure what return
+> value you construct, instead of writing large one-liners.
+
 All `*.nix` files you explore in this repository are exactly similar but the
 attribute set they return will be specific to what the
 [NixOS module system](https://nixos.org/manual/nixos/stable/#sec-writing-modules)
 expects. More to that later.
-
-Here's an improved version with better readability, clarity, and flow:
 
 ---
 
@@ -245,7 +249,7 @@ Flakes.
 
 ---
 
-### NixOS
+### What is NixOS?
 
 A NixOS derivation is created by a function `inputs.nixpkgs.lib.nixosSystem`
 which comes from the [Nixpkgs Flake](https://github.com/NixOS/nixpkgs). The
