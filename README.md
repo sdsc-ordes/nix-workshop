@@ -21,21 +21,21 @@ understand the goal of this workshop:
 - Configure and build a NixOS system.
 - Deploy it to a Cloud VM.
 
-<!-- prettier-ignore: start -->
+<!-- prettier-ignore-start -->
 <!--toc:start-->
 
-- [NixOS Workshop](#nixos-workshop)
-  - [Requirements](#requirements)
-  - [Introduction](#introduction)
-    - [Flake `flake.nix`](#flake-flakenix)
-    - [Nix Derivation](#nix-derivation)
-      - [Installable](#installable)
-    - [NixOS](#nixos)
-  - [Build & Understand a Simple VM](#build-understand-a-simple-vm)
-    - [Understand the Configuration](#understand-the-configuration)
+- [Requirements](#requirements)
+- [Introduction](#introduction)
+  - [Whats a Flake `flake.nix`](#whats-a-flake-flakenix)
+  - [Whats a Nix Derivation?](#whats-a-nix-derivation)
+  - [Whats an Installable?](#whats-an-installable)
+  - [NixOS](#nixos)
+    - [The `nixosSystem` Function](#the-nixossystem-function)
+- [Build/Run & Understand a Simple VM](#buildrun-understand-a-simple-vm)
+  - [Understand the Configuration](#understand-the-configuration)
 
 <!--toc:end-->
-<!-- prettier-ignore: end -->
+<!-- prettier-ignore-end -->
 
 > [!TIP]
 >
@@ -70,6 +70,13 @@ Nix is a simple functional language which is almost similar to JSON with
 functions. It has basic types like `string`s, `integers`, `paths`, `list`s and
 `attribute set`s, (further
 [read](https://nixos.org/guides/nix-pills/04-basics-of-language.html#basics-of-language)).
+
+> [!CAUTION]
+>
+> The Nix language has its purpose and target towards deterministically building
+> & distributing software and therefore is a very narrowly scoped language. That
+> means you also don't find floating-point types etc. because it has little
+> benefit in this context.
 
 When you look at most Nix files `*.nix` in this and other repositories, they
 will most always contain a function (further
@@ -107,7 +114,7 @@ attribute set they return will be specific to what the
 [NixOS module system](https://nixos.org/manual/nixos/stable/#sec-writing-modules)
 expects.
 
-### Flake `flake.nix`
+### Whats a Flake `flake.nix`
 
 A [`flake.nix`](./flake.nix) is a deterministic way
 ([`flake.lock`](./flake.lock)) to load other Nix functions - called
@@ -123,7 +130,7 @@ a function which takes all `inputs` and must return an
 What you return in `outputs` (e.g. `outputs.x86_64-linux.packages = ...`) are
 mostly Nix **derivations**.
 
-### Nix Derivation
+### Whats a Nix Derivation?
 
 A [derivation](https://nix.dev/manual/nix/2.24/glossary#gloss-derivation) is in
 its raw-form an **attribute set** (e.g. `{ type = "derivation"; ... }`) with
@@ -194,7 +201,7 @@ tree /nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt
 You can of course run it by doing
 `/nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt/bin/treefmt -h`.
 
-#### Installable
+### Whats an Installable?
 
 The path `.#formatter.x86_64-linux.treefmt` in the previous section is commonly
 referred to as a
@@ -225,6 +232,8 @@ which comes from the [Nixpkgs Flake](https://github.com/NixOS/nixpkgs). The
 `nixpkgs` repository is the mono-repository which maintains more than 130'000
 software packages. These packages are defined - by nothing more than (you
 guessed it) - Nix functions which return derivations.
+
+#### The `nixosSystem` Function
 
 The `inputs.nixpkgs.lib.nixosSystem` function will produce a derivation which
 you can evaluate. For example - in this repository's
@@ -283,14 +292,13 @@ prepares symlinks into the immutable `/nix/store` on folders like
 - `/home` (home directories)
 - etc.
 
-The
 [`switch-to-configuration`](https://nixos.org/manual/nixos/stable/#sec-switching-systems)
 script also takes care to switch to the new system on a running system and
 restart the appropriate `systemd` services.
 
 The next section explains how to build/run & understand a simple NixOS VM setup.
 
-## Build & Understand a Simple VM
+## Build/Run & Understand a Simple VM
 
 In this example we are going to build a simple VM with just a user `nixos` and
 without a graphical desktop environment.
