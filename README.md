@@ -8,8 +8,7 @@
 
 > [!CAUTION]
 >
-> This workshop is currently under development and is not yet complete. Please
-> refrain from reading it!
+> This workshop is currently under development and is not yet complete.
 
 This workshop focuses on building and running a basic NixOS system. It is
 designed to provide a **minimal, hands-on** introduction to how Nix/NixOS works.
@@ -67,9 +66,9 @@ The basic requirements for working with this repository are:
 
 ## Introduction
 
-Nix is a simple functional language, structurally similar to JSON but with
-functions. It supports fundamental data types such as `string`s, `integers`,
-`paths`, `lists`, and `attribute sets`. For a more detailed explanation, see
+Nix is a domain-specific functional language, structurally similar to JSON but with
+functions. It supports fundamental data types such as `string`, `integer`,
+`path`, `list`, and `attribute set`. For a more detailed explanation, see
 [Nix Language Basics](https://nixos.org/guides/nix-pills/04-basics-of-language.html#basics-of-language).
 
 > [!CAUTION]
@@ -126,7 +125,7 @@ specifying what the flake provides.
 
 Each `flake.nix` file consists of a **single attribute set**, containing:
 
-- **Inputs**: Defined in the `inputs` attribute, listing dependencies the flake
+- **Inputs**: An attribute set defined inside the `inputs` attribute, listing dependencies the flake
   relies on.
 - **Outputs**: A function that takes `inputs` and returns an
   [attribute set](https://nixos-and-flakes.thiscute.world/other-usage-of-flakes/outputs),
@@ -176,6 +175,7 @@ A [derivation](https://nix.dev/manual/nix/2.24/glossary#gloss-derivation) is a
 form, it looks like `{ type = "derivation"; ... }` and carries a well-defined
 structure with built-in meaning.
 
+
 > A derivation is an instruction that Nix uses to realize a package. Created
 > using a special `derivation` function in the Nix language, it can depend on
 > multiple other derivations and produce one or more outputs. The complete set
@@ -186,6 +186,18 @@ structure with built-in meaning.
 When Nix evaluates a derivation, it stores the result in the Nix store
 (`/nix/store`) as a **store derivation**
 ([more details](https://nix.dev/manual/nix/2.24/glossary#gloss-store-derivation)).
+
+As several concepts are being introduced, here is a visual reference showing how they relate to each other:
+
+```mermaid
+
+flowchart TD
+    A["Flake (flake.nix)"] -->|"Contains(output)"| B["Package (Nix Expression)"]
+    B -->|"Evaluate"| C["Derivation (.drv)"]
+    C -->|"Realize (build)"| D["/Built Output in /nix/store/"]
+    C -->|"Serialize"| E["Serialized Derivation (JSON)"]
+
+```
 
 To inspect the `formatter.x86_64-linux` output from this repository’s
 [`flake.nix`](./flake.nix), run the following command:
