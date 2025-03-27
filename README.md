@@ -191,11 +191,10 @@ As several concepts are being introduced, here is a visual reference showing how
 
 ```mermaid
 
-flowchart TD
-    A["Flake (flake.nix)"] -->|"Contains(output)"| B["Package (Nix Expression)"]
-    B -->|"Evaluate"| C["Derivation (.drv)"]
-    C -->|"Realize (build)"| D["/Built Output in /nix/store/"]
-    C -->|"Serialize"| E["Serialized Derivation (JSON)"]
+flowchart LR
+    A["Flake<br><code>flake.nix</code>"] -->|"contains output"| B["Package<br>(Nix Expression)"]
+    B -->|"evaluate"| C["Derivation<br>(<code>/nix/store/*.drv</code>)"]
+    C -->|"realize/build"| D["Output in<br><code>/nix/store/*</code>"]
 
 ```
 
