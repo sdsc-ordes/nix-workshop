@@ -66,8 +66,8 @@ The basic requirements for working with this repository are:
 
 ## Introduction
 
-Nix is a domain-specific functional language, structurally similar to JSON but with
-functions. It supports fundamental data types such as `string`, `integer`,
+Nix is a domain-specific functional language, structurally similar to JSON but
+with functions. It supports fundamental data types such as `string`, `integer`,
 `path`, `list`, and `attribute set`. For a more detailed explanation, see
 [Nix Language Basics](https://nixos.org/guides/nix-pills/04-basics-of-language.html#basics-of-language).
 
@@ -123,17 +123,28 @@ structured
 [**outputs**](https://nixos-and-flakes.thiscute.world/nixos-with-flakes/nixos-flake-configuration-explained#_2-flake-outputs),
 specifying what the flake provides.
 
-Each `flake.nix` file consists of a **single attribute set**, containing:
+Each [`flake.nix`](./flake.nix) file consists of a **single attribute set** in
+the form:
 
-- **Inputs**: An attribute set defined inside the `inputs` attribute, listing dependencies the flake
-  relies on.
-- **Outputs**: A function that takes `inputs` and returns an
+```nix
+{
+  inputs = { /* ... */ };
+  outputs = inputs: { /* implementation */}
+}
+```
+
+which contains:
+
+- **Inputs**: An attribute set `inputs`, listing dependencies the flake relies
+  on.
+- **Outputs**: A function that takes all `inputs` and returns an
   [attribute set](https://nixos-and-flakes.thiscute.world/other-usage-of-flakes/outputs),
   specifying what the flake provides (e.g., packages, modules, or NixOS
   configurations).
 
-For example, outputs such as `outputs.x86_64-linux.packages = ...` typically
-define Nix **derivations**, which are the core building blocks of Nix packages.
+For example, an _evaluated output_ (remember that `outputs` is a function) such
+as `outputs.x86_64-linux.packages = ...` typically defines Nix **derivations**,
+which are the core building blocks of Nix packages.
 
 ### How to Inspect a Flake?
 
@@ -175,7 +186,6 @@ A [derivation](https://nix.dev/manual/nix/2.24/glossary#gloss-derivation) is a
 form, it looks like `{ type = "derivation"; ... }` and carries a well-defined
 structure with built-in meaning.
 
-
 > A derivation is an instruction that Nix uses to realize a package. Created
 > using a special `derivation` function in the Nix language, it can depend on
 > multiple other derivations and produce one or more outputs. The complete set
@@ -187,15 +197,14 @@ When Nix evaluates a derivation, it stores the result in the Nix store
 (`/nix/store`) as a **store derivation**
 ([more details](https://nix.dev/manual/nix/2.24/glossary#gloss-store-derivation)).
 
-As several concepts are being introduced, here is a visual reference showing how they relate to each other:
+As several concepts are being introduced, here is a visual reference showing how
+they relate to each other:
 
 ```mermaid
-
 flowchart LR
     A["Flake<br><code>flake.nix</code>"] -->|"contains output"| B["Package<br>(Nix Expression)"]
     B -->|"evaluate"| C["Derivation<br>(<code>/nix/store/*.drv</code>)"]
     C -->|"realize/build"| D["Output in<br><code>/nix/store/*</code>"]
-
 ```
 
 To inspect the `formatter.x86_64-linux` output from this repository’s
