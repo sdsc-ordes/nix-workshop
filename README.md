@@ -47,6 +47,7 @@ the objectives of this workshop:
 > - [NixOS Manual](https://nixos.org/manual/nixos/stable/)
 > - [NixOS Options Search](https://search.nixos.org/options?)
 > - [Nix Packages Search](https://search.nixos.org/packages?)
+> - [Nix Packages Search for Version Pinning](https://nixhub.io)
 > - [Nixpkgs-Lib Function Search](https://noogle.dev/)
 > - [NixOS With Flakes](https://nixos-and-flakes.thiscute.world/nixos-with-flakes)
 > - [NixOS Status](https://status.nixos.org/)
