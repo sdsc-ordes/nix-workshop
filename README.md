@@ -2,7 +2,7 @@
     <img src="https://raw.githubusercontent.com/NixOS/nixos-artwork/4c449b822779d9f3fca2e0eed36c95b07d623fd9/ng/out/nix.svg" style="margin-left: 20pt; width: 150px" align="center"/>
     <br>
     <br>
-    <br>NixOS Workshop
+    <br>Nix & NixOS Workshop
     <br>
 </h1>
 
@@ -10,31 +10,39 @@
 >
 > This workshop is currently under development and is not yet complete.
 
-This workshop focuses on building and running a basic NixOS system. It is
-designed to provide a **minimal, hands-on** introduction to how Nix/NixOS works.
-While explanations are concise, they aim to be precise enough to help you grasp
-the objectives of this workshop:
+This workshop is structured in 2 parts
 
-- Gain a basic understanding of the Nix language.
-- Learn what a `flake.nix` file is.
-- Understand what a Nix derivation is and how it materializes.
-- Configure and build a NixOS system.
-- Deploy it to a cloud VM.
+- Part 1: Learn what a Nix DevShell is and how to extend it. It is designed to
+  provide a **minimal, hands-on** introduction to how Nix works. While
+  explanations are concise, they aim to be precise enough to help you grasp the
+  objectives of this part.
+
+  - Gain a basic understanding of the Nix language.
+  - Learn what a `flake.nix` file is.
+  - Understand what a Nix derivation is and how it materializes.
+
+- Part 2: Building and running a basic NixOS system.
+  - Requires Part 1.
+  - Configure and build a NixOS system.
+  - Deploy it to a cloud VM.
 
 <!-- prettier-ignore-start -->
-<!--toc:start-->
 
+
+<!--toc:start-->
 - [Requirements](#requirements)
 - [Introduction](#introduction)
-  - [Whats a Flake `flake.nix`](#whats-a-flake-flakenix)
-  - [Whats a Nix Derivation?](#whats-a-nix-derivation)
-  - [Whats an Installable?](#whats-an-installable)
-  - [NixOS](#nixos)
+  - [What is a Flake? (`flake.nix`)](#what-is-a-flake-flakenix)
+  - [How to Inspect a Flake?](#how-to-inspect-a-flake)
+  - [What is a Nix Derivation?](#what-is-a-nix-derivation)
+  - [What is an Installable?](#what-is-an-installable)
+  - [What is NixOS?](#what-is-nixos)
     - [The `nixosSystem` Function](#the-nixossystem-function)
 - [Build/Run & Understand a Simple VM](#buildrun-understand-a-simple-vm)
   - [Understand the Configuration](#understand-the-configuration)
-
 <!--toc:end-->
+
+
 <!-- prettier-ignore-end -->
 
 > [!TIP]
@@ -44,14 +52,14 @@ the objectives of this workshop:
 > provided. Learning Nix can be challenging, but we prioritize linking to
 > official documentation whenever relevant. Some useful resources include:
 >
-> - [NixOS Manual](https://nixos.org/manual/nixos/stable/)
-> - [NixOS Options Search](https://search.nixos.org/options?)
 > - [Nix Packages Search](https://search.nixos.org/packages?)
 > - [Nix Packages Search for Version Pinning](https://nixhub.io)
-> - [Nixpkgs-Lib Function Search](https://noogle.dev/)
+> - [NixOS Manual](https://nixos.org/manual/nixos/stable/)
+> - [NixOS Options Search](https://search.nixos.org/options?)
 > - [NixOS With Flakes](https://nixos-and-flakes.thiscute.world/nixos-with-flakes)
 > - [NixOS Status](https://status.nixos.org/)
 > - [Nixpkgs Pull Request Tracker](https://nixpk.gs/pr-tracker.html)
+> - [Nixpkgs-Lib Function Search](https://noogle.dev/)
 
 ## Requirements
 
