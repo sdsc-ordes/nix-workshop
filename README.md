@@ -162,6 +162,14 @@ fundamental `derivation` command in the
 [original script](examples/whats-my-ip-orig.nix) the imported and evaluated
 `nixpkgs` function at the top (it returns `pkgs` for the current `system`).
 
+Check the dependency graph with
+
+```bash
+nix run github:craigmbooth/nix-visualize -- "$(nix build -f what-is-my-ip.nix --print-out-paths)"
+```
+
+and open the `frame.png`.
+
 ---
 
 #### What is a Flake? (`flake.nix`)
