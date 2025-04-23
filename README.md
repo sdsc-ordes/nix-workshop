@@ -73,7 +73,9 @@ The basic requirements for working with this repository are:
 - `just`
 - `nix`
 
-## Introduction
+## Part 1 - Nix & Nix DevShell
+
+### Introduction
 
 Nix is a domain-specific functional language, structurally similar to JSON but
 with functions. It supports fundamental data types such as `string`, `integer`,
@@ -94,7 +96,7 @@ For example, the function `args: /* implementation */` in `myfunction.nix` takes
 one argument `args` and returns an attribute set `{ val1 = ... }`:
 
 ```nix
-# File: `myfunction.nix`:
+## File: `myfunction.nix`:
 args:
 let
   aNumber = 1;  # A number.
@@ -117,11 +119,52 @@ get a better understanding on this basic building block.
 All `*.nix` files you explore in this repository are exactly similar but the
 attribute set they return will be specific to what the
 [NixOS module system](https://nixos.org/manual/nixos/stable/#sec-writing-modules)
-expects. More to that later.
+expects (see [part 2](#part-2-nixos)). More to that later.
+
+#### Learn Nix the Fun Way
+
+You think, "jeah, yet another boring, simplistic language", but there is more to
+it, especially why its functional in nature.
+
+Lets go through the awesome slides from
+[Farid Zakaria](https://fzakaria.github.io/learn-nix-the-fun-way/) to give you
+the most promising introduction what Nix can do for 🫵. Stop at slide 9:
+
+Lets build the derivation (we will give you a better understanding
+[in the next section](#what-is-a-nix-derivation)) for his `what-is-my-ip`
+script. Put the following Nix function into a file
+[`what-is-my-ip.nix`](./examples/whats-my-ip.nix):
+
+```nix
+{
+system ? builtins.currentSystem,
+pkgs ?
+  import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/9684b53175fc6c09581e94cc85f05ab77464c7e3.tar.gz") {
+    inherit system;
+  },
+}:
+pkgs.writeShellScriptBin "what-is-my-ip" ''
+${pkgs.curl}/bin/curl -s http://httpbin.org/get | \
+  ${pkgs.jq}/bin/jq --raw-output .origin
+''
+```
+
+Now build this _derivation_ by handing this Nix function to `nix build` with:
+
+```bash
+nix build -f what-is-my-ip.nix --print-out-paths
+
+> /nix/store/7x9hf9g95d4wjjvq853x25jhakki63bz-what-is-my-ip
+```
+
+The `pkgs.writeShellScriptBin` is a **trivial builder** function around the
+fundamental `derivation` command in the
+[original script](examples/whats-my-ip-orig.nix) the imported and evaluated
+`nixpkgs` function at the top (it returns `pkgs` for the current `system`).
 
 ---
 
-### What is a Flake? (`flake.nix`)
+#### What is a Flake? (`flake.nix`)
 
 A [`flake.nix`](./flake.nix) provides a **deterministic** way to manage
 dependencies and configurations in Nix. It references external Nix
@@ -155,7 +198,7 @@ For example, an _evaluated output_ (remember that `outputs` is a function) such
 as `outputs.x86_64-linux.packages = ...` typically defines Nix **derivations**,
 which are the core building blocks of Nix packages.
 
-### How to Inspect a Flake?
+#### How to Inspect a Flake?
 
 You can run the Nix interpreter and load a flake in directory `.` and use tab
 completion on output attributes like so:
@@ -188,7 +231,7 @@ nix repl
 
 ---
 
-### What is a Nix Derivation?
+#### What is a Nix Derivation?
 
 A [derivation](https://nix.dev/manual/nix/2.24/glossary#gloss-derivation) is a
 **specialized attribute set** that describes how to build a Nix package. In raw
@@ -252,7 +295,7 @@ or
 
 ```bash
 nix build ".#formatter.x86_64-linux"
-# Use quoted strings here (`zsh` interprets # differently!"
+## Use quoted strings here (`zsh` interprets # differently!"
 ```
 
 This will by default produce a symlink `./result` pointing to the Nix store
@@ -279,7 +322,7 @@ nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt/bin/treefmt -h
 
 ---
 
-### What is an Installable?
+#### What is an Installable?
 
 The path `.#formatter.x86_64-linux.treefmt` mentioned in the previous section is
 commonly referred to as a
@@ -298,7 +341,8 @@ Breaking down `.#formatter.x86_64-linux.treefmt`:
 Most
 [modern Nix commands](https://nix.dev/manual/nix/2.24/command-ref/experimental-commands)
 accept installables as input, making them a fundamental concept in working with
-Flakes.
+Flakes. **You should only use the modern commands, e.g. `nix <subcommand>`**.
+Stay away from the command`nix-env`.
 
 > [!TIP]
 >
@@ -309,7 +353,9 @@ Flakes.
 
 ---
 
-### What is NixOS?
+## Part 2 - NixOS
+
+#### What is NixOS?
 
 A NixOS derivation is created by a function `inputs.nixpkgs.lib.nixosSystem`
 which comes from the [Nixpkgs Flake](https://github.com/NixOS/nixpkgs). The
@@ -317,7 +363,7 @@ which comes from the [Nixpkgs Flake](https://github.com/NixOS/nixpkgs). The
 software packages. These packages are defined - by nothing more than (you
 guessed it) - Nix functions which return derivations.
 
-#### The `nixosSystem` Function
+##### The `nixosSystem` Function
 
 The `inputs.nixpkgs.lib.nixosSystem` function will produce a derivation which
 you can evaluate. For example - in this repository's
@@ -382,7 +428,7 @@ restart the appropriate `systemd` services.
 
 The next section explains how to build/run & understand a simple NixOS VM setup.
 
-## Build/Run & Understand a Simple VM
+### Build/Run & Understand a Simple VM
 
 First familiar yourself with the commands on the [`justfile`](./justfile) with
 by running `just`. The `build` and `repl` commands, we have covered in the
@@ -393,10 +439,10 @@ without a graphical desktop environment.
 
 ```bash
 cp ./.env.tmpl .env
-# Modify the .env file to have `NIXOS_HOST=vm-simple`
+## Modify the .env file to have `NIXOS_HOST=vm-simple`
 ```
 
-### Understand the Configuration
+#### Understand the Configuration
 
 The [`./nixos/hosts/vm-simple/default.nix`](./nixos/hosts/vm-simple/default.nix)
 contains one function which returns the NixOS system:
