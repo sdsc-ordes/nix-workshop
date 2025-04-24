@@ -152,7 +152,7 @@ ${pkgs.curl}/bin/curl -s http://httpbin.org/get | \
 
 This function takes two parameters:
 
-- `system`: a string mostly 'x86_64-linux' and defaulted to your current system)
+- `system`: a string mostly `x86_64-linux` and defaulted to your current system)
   and
 - `pkgs`: an attribute set and defaulted to the main function of the `nixpkgs`
   repository. The repository `nixpkgs` is the central package mono-repository
