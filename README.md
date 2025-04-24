@@ -31,15 +31,18 @@ This workshop is structured in 2 parts
 
 <!--toc:start-->
 - [Requirements](#requirements)
-- [Introduction](#introduction)
-  - [What is a Flake? (`flake.nix`)](#what-is-a-flake-flakenix)
-  - [How to Inspect a Flake?](#how-to-inspect-a-flake)
-  - [What is a Nix Derivation?](#what-is-a-nix-derivation)
-  - [What is an Installable?](#what-is-an-installable)
-  - [What is NixOS?](#what-is-nixos)
-    - [The `nixosSystem` Function](#the-nixossystem-function)
-- [Build/Run & Understand a Simple VM](#buildrun-understand-a-simple-vm)
-  - [Understand the Configuration](#understand-the-configuration)
+- [Part 1 - Nix & Nix DevShell](#part-1-nix-nix-devshell)
+  - [Introduction](#introduction)
+    - [Learn Nix the Fun Way](#learn-nix-the-fun-way)
+    - [What is a Flake? (`flake.nix`)](#what-is-a-flake-flakenix)
+    - [How to Inspect a Flake?](#how-to-inspect-a-flake)
+    - [What is a Nix Derivation?](#what-is-a-nix-derivation)
+    - [What is an Installable?](#what-is-an-installable)
+- [Part 2 - NixOS](#part-2-nixos)
+    - [What is NixOS?](#what-is-nixos)
+      - [The `nixosSystem` Function](#the-nixossystem-function)
+  - [Build/Run & Understand a Simple VM](#buildrun-understand-a-simple-vm)
+    - [Understand the Configuration](#understand-the-configuration)
 <!--toc:end-->
 
 
@@ -73,9 +76,7 @@ The basic requirements for working with this repository are:
 - `just`
 - `nix`
 
-## Part 1 - Nix & Nix DevShell
-
-### Introduction
+## Part 1 - Nix, Flakes & Nix DevShell
 
 Nix is a domain-specific functional language, structurally similar to JSON but
 with functions. It supports fundamental data types such as `string`, `integer`,
@@ -96,7 +97,7 @@ For example, the function `args: /* implementation */` in `myfunction.nix` takes
 one argument `args` and returns an attribute set `{ val1 = ... }`:
 
 ```nix
-## File: `myfunction.nix`:
+# File: `myfunction.nix`:
 args:
 let
   aNumber = 1;  # A number.
@@ -121,7 +122,7 @@ attribute set they return will be specific to what the
 [NixOS module system](https://nixos.org/manual/nixos/stable/#sec-writing-modules)
 expects (see [part 2](#part-2-nixos)). More to that later.
 
-#### Learn Nix the Fun Way
+### Learn Nix the Fun Way
 
 You think, "jeah, yet another boring, simplistic language", but there is more to
 it, especially why its functional in nature.
@@ -188,7 +189,7 @@ Finish the slides to the end of the presentation.
 
 ---
 
-#### What is a Flake? (`flake.nix`)
+### What is a Flake? (`flake.nix`)
 
 A [`flake.nix`](./flake.nix) provides a **deterministic** way to manage
 dependencies and configurations in Nix. In contrast to the function in
@@ -225,7 +226,7 @@ For example, an _evaluated output_ (remember that `outputs` is a function) such
 as `outputs.x86_64-linux.packages = ...` typically defines Nix **derivations**,
 which are the core building blocks of Nix packages.
 
-#### How to Inspect a Flake?
+### How to Inspect a Flake?
 
 You can run the Nix interpreter and load a flake in directory `.` and use tab
 completion on output attributes like so:
@@ -258,7 +259,7 @@ nix repl
 
 ---
 
-#### What is a Nix Derivation?
+### What is a Nix Derivation?
 
 A [derivation](https://nix.dev/manual/nix/2.24/glossary#gloss-derivation) is a
 **specialized attribute set** that describes how to build a Nix package. In raw
@@ -322,7 +323,7 @@ or
 
 ```bash
 nix build ".#formatter.x86_64-linux"
-## Use quoted strings here (`zsh` interprets # differently!"
+# Use quoted strings here (`zsh` interprets # differently!"
 ```
 
 This will by default produce a symlink `./result` pointing to the Nix store
@@ -349,7 +350,7 @@ nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt/bin/treefmt -h
 
 ---
 
-#### What is an Installable?
+### What is an Installable?
 
 The path `.#formatter.x86_64-linux.treefmt` mentioned in the previous section is
 commonly referred to as a
