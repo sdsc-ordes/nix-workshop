@@ -2,7 +2,7 @@
     <img src="https://raw.githubusercontent.com/NixOS/nixos-artwork/4c449b822779d9f3fca2e0eed36c95b07d623fd9/ng/out/nix.svg" style="margin-left: 20pt; width: 150px" align="center"/>
     <br>
     <br>
-    <br>NixOS Workshop
+    <br>Nix & NixOS Workshop
     <br>
 </h1>
 
@@ -10,31 +10,39 @@
 >
 > This workshop is currently under development and is not yet complete.
 
-This workshop focuses on building and running a basic NixOS system. It is
-designed to provide a **minimal, hands-on** introduction to how Nix/NixOS works.
-While explanations are concise, they aim to be precise enough to help you grasp
-the objectives of this workshop:
+This workshop is structured in 2 parts
 
-- Gain a basic understanding of the Nix language.
-- Learn what a `flake.nix` file is.
-- Understand what a Nix derivation is and how it materializes.
-- Configure and build a NixOS system.
-- Deploy it to a cloud VM.
+- Part 1: Learn what a Nix DevShell is and how to extend it. It is designed to
+  provide a **minimal, hands-on** introduction to how Nix works. While
+  explanations are concise, they aim to be precise enough to help you grasp the
+  objectives of this part.
+
+  - Gain a basic understanding of the Nix language.
+  - Learn what a `flake.nix` file is.
+  - Understand what a Nix derivation is and how it materializes.
+
+- Part 2: Building and running a basic NixOS system.
+  - Requires Part 1.
+  - Configure and build a NixOS system.
+  - Deploy it to a cloud VM.
 
 <!-- prettier-ignore-start -->
-<!--toc:start-->
 
+
+<!--toc:start-->
 - [Requirements](#requirements)
 - [Introduction](#introduction)
-  - [Whats a Flake `flake.nix`](#whats-a-flake-flakenix)
-  - [Whats a Nix Derivation?](#whats-a-nix-derivation)
-  - [Whats an Installable?](#whats-an-installable)
-  - [NixOS](#nixos)
+  - [What is a Flake? (`flake.nix`)](#what-is-a-flake-flakenix)
+  - [How to Inspect a Flake?](#how-to-inspect-a-flake)
+  - [What is a Nix Derivation?](#what-is-a-nix-derivation)
+  - [What is an Installable?](#what-is-an-installable)
+  - [What is NixOS?](#what-is-nixos)
     - [The `nixosSystem` Function](#the-nixossystem-function)
 - [Build/Run & Understand a Simple VM](#buildrun-understand-a-simple-vm)
   - [Understand the Configuration](#understand-the-configuration)
-
 <!--toc:end-->
+
+
 <!-- prettier-ignore-end -->
 
 > [!TIP]
@@ -44,14 +52,14 @@ the objectives of this workshop:
 > provided. Learning Nix can be challenging, but we prioritize linking to
 > official documentation whenever relevant. Some useful resources include:
 >
-> - [NixOS Manual](https://nixos.org/manual/nixos/stable/)
-> - [NixOS Options Search](https://search.nixos.org/options?)
 > - [Nix Packages Search](https://search.nixos.org/packages?)
 > - [Nix Packages Search for Version Pinning](https://nixhub.io)
-> - [Nixpkgs-Lib Function Search](https://noogle.dev/)
+> - [NixOS Manual](https://nixos.org/manual/nixos/stable/)
+> - [NixOS Options Search](https://search.nixos.org/options?)
 > - [NixOS With Flakes](https://nixos-and-flakes.thiscute.world/nixos-with-flakes)
 > - [NixOS Status](https://status.nixos.org/)
 > - [Nixpkgs Pull Request Tracker](https://nixpk.gs/pr-tracker.html)
+> - [Nixpkgs-Lib Function Search](https://noogle.dev/)
 
 ## Requirements
 
@@ -65,7 +73,9 @@ The basic requirements for working with this repository are:
 - `just`
 - `nix`
 
-## Introduction
+## Part 1 - Nix & Nix DevShell
+
+### Introduction
 
 Nix is a domain-specific functional language, structurally similar to JSON but
 with functions. It supports fundamental data types such as `string`, `integer`,
@@ -86,7 +96,7 @@ For example, the function `args: /* implementation */` in `myfunction.nix` takes
 one argument `args` and returns an attribute set `{ val1 = ... }`:
 
 ```nix
-# File: `myfunction.nix`:
+## File: `myfunction.nix`:
 args:
 let
   aNumber = 1;  # A number.
@@ -109,15 +119,83 @@ get a better understanding on this basic building block.
 All `*.nix` files you explore in this repository are exactly similar but the
 attribute set they return will be specific to what the
 [NixOS module system](https://nixos.org/manual/nixos/stable/#sec-writing-modules)
-expects. More to that later.
+expects (see [part 2](#part-2-nixos)). More to that later.
+
+#### Learn Nix the Fun Way
+
+You think, "jeah, yet another boring, simplistic language", but there is more to
+it, especially why its functional in nature.
+
+Lets go through the awesome slides from
+[Farid Zakaria](https://fzakaria.github.io/learn-nix-the-fun-way/) to give you
+the most promising introduction what Nix can do for 🫵. Stop at slide 9:
+
+Lets build the derivation for the `what-is-my-ip` script (we will give you a
+better understanding [in the next section](#what-is-a-nix-derivation)). Put the
+following Nix function into a file
+[`what-is-my-ip.nix`](./examples/whats-my-ip.nix):
+
+```nix
+{
+system ? builtins.currentSystem,
+pkgs ?
+  import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/9684b53175fc6c09581e94cc85f05ab77464c7e3.tar.gz") {
+    inherit system;
+  },
+}:
+pkgs.writeShellScriptBin "what-is-my-ip" ''
+${pkgs.curl}/bin/curl -s http://httpbin.org/get | \
+  ${pkgs.jq}/bin/jq --raw-output .origin
+''
+```
+
+This function takes two parameters:
+
+- `system`: a string mostly 'x86_64-linux' and defaulted to your current system)
+  and
+- `pkgs`: an attribute set and defaulted to the main function of the `nixpkgs`
+  repository. The repository `nixpkgs` is the central package mono-repository
+  which maintains packages (_derivations_) for Nix.
+
+Now build the _derivation_ (the result of the `pkgs.writeShellScriptBin`
+function) by evaluating and building this Nix function with `nix build` with:
+
+```bash
+nix build -f what-is-my-ip.nix --print-out-paths
+
+> /nix/store/7x9hf9g95d4wjjvq853x25jhakki63bz-what-is-my-ip
+```
+
+The `pkgs.writeShellScriptBin` is a **trivial builder** function around the
+fundamental `derivation` command in the
+[original script](examples/what-is-my-ip-orig.nix).
+
+Check the dependency graph with
+
+```bash
+nix run github:craigmbooth/nix-visualize -- "$(nix build -f what-is-my-ip.nix --print-out-paths)"
+```
+
+and inspect the `frame.png`:
+
+![Dependency Graph](docs/assets/dependency-graph.png)
+
+Since Nix knows all that and everything is maintained in the `/nix/store`, Nix
+can trivially copy for example this script with all its dependencies into
+another store.
+
+Finish the slides to the end of the presentation.
 
 ---
 
-### What is a Flake? (`flake.nix`)
+#### What is a Flake? (`flake.nix`)
 
 A [`flake.nix`](./flake.nix) provides a **deterministic** way to manage
-dependencies and configurations in Nix. It references external Nix
-functions—called
+dependencies and configurations in Nix. In contrast to the function in
+`what-is-my-ip.nix` which hard-codes the `pkgs` to a certain commit on the
+`nixpkgs` repository, a flake is a better way to manage such locked inputs.
+
+A flake references external Nix functions—called
 [**inputs**](https://nixos-and-flakes.thiscute.world/nixos-with-flakes/nixos-flake-configuration-explained#_1-flake-inputs)—which
 are fetched from other repositories, local files, or URLs. It also defines
 structured
@@ -147,7 +225,7 @@ For example, an _evaluated output_ (remember that `outputs` is a function) such
 as `outputs.x86_64-linux.packages = ...` typically defines Nix **derivations**,
 which are the core building blocks of Nix packages.
 
-### How to Inspect a Flake?
+#### How to Inspect a Flake?
 
 You can run the Nix interpreter and load a flake in directory `.` and use tab
 completion on output attributes like so:
@@ -180,7 +258,7 @@ nix repl
 
 ---
 
-### What is a Nix Derivation?
+#### What is a Nix Derivation?
 
 A [derivation](https://nix.dev/manual/nix/2.24/glossary#gloss-derivation) is a
 **specialized attribute set** that describes how to build a Nix package. In raw
@@ -244,7 +322,7 @@ or
 
 ```bash
 nix build ".#formatter.x86_64-linux"
-# Use quoted strings here (`zsh` interprets # differently!"
+## Use quoted strings here (`zsh` interprets # differently!"
 ```
 
 This will by default produce a symlink `./result` pointing to the Nix store
@@ -271,7 +349,7 @@ nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt/bin/treefmt -h
 
 ---
 
-### What is an Installable?
+#### What is an Installable?
 
 The path `.#formatter.x86_64-linux.treefmt` mentioned in the previous section is
 commonly referred to as a
@@ -290,7 +368,8 @@ Breaking down `.#formatter.x86_64-linux.treefmt`:
 Most
 [modern Nix commands](https://nix.dev/manual/nix/2.24/command-ref/experimental-commands)
 accept installables as input, making them a fundamental concept in working with
-Flakes.
+Flakes. **You should only use the modern commands, e.g. `nix <subcommand>`**.
+Stay away from the command`nix-env`.
 
 > [!TIP]
 >
@@ -301,7 +380,9 @@ Flakes.
 
 ---
 
-### What is NixOS?
+## Part 2 - NixOS
+
+#### What is NixOS?
 
 A NixOS derivation is created by a function `inputs.nixpkgs.lib.nixosSystem`
 which comes from the [Nixpkgs Flake](https://github.com/NixOS/nixpkgs). The
@@ -309,7 +390,7 @@ which comes from the [Nixpkgs Flake](https://github.com/NixOS/nixpkgs). The
 software packages. These packages are defined - by nothing more than (you
 guessed it) - Nix functions which return derivations.
 
-#### The `nixosSystem` Function
+##### The `nixosSystem` Function
 
 The `inputs.nixpkgs.lib.nixosSystem` function will produce a derivation which
 you can evaluate. For example - in this repository's
@@ -374,7 +455,7 @@ restart the appropriate `systemd` services.
 
 The next section explains how to build/run & understand a simple NixOS VM setup.
 
-## Build/Run & Understand a Simple VM
+### Build/Run & Understand a Simple VM
 
 First familiar yourself with the commands on the [`justfile`](./justfile) with
 by running `just`. The `build` and `repl` commands, we have covered in the
@@ -385,10 +466,10 @@ without a graphical desktop environment.
 
 ```bash
 cp ./.env.tmpl .env
-# Modify the .env file to have `NIXOS_HOST=vm-simple`
+## Modify the .env file to have `NIXOS_HOST=vm-simple`
 ```
 
-### Understand the Configuration
+#### Understand the Configuration
 
 The [`./nixos/hosts/vm-simple/default.nix`](./nixos/hosts/vm-simple/default.nix)
 contains one function which returns the NixOS system:
