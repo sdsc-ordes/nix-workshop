@@ -171,7 +171,27 @@ The `pkgs.writeShellScriptBin` is a **trivial builder** function around the
 fundamental `derivation` command in the
 [original script](examples/what-is-my-ip-orig.nix).
 
-Check the dependency graph with
+Explore what is inside this executable with:
+
+```bash
+cat /nix/store/7x9hf9g95d4wjjvq853x25jhakki63bz-what-is-my-ip/bin/what-is-my-ip
+
+> #!/nix/store/mc4485g4apaqzjx59dsmqscls1zc3p2w-bash-5.2p37/bin/bash
+> /nix/store/zl7h70n70g5m57iw5pa8gqkxz6y0zfcf-curl-8.12.1-bin/bin/curl -s http://httpbin.org/get | \
+>  /nix/store/y50rkdixqzgdgnps2vrc8g0f0kyvpb9w-jq-1.7.1-bin/bin/jq --raw-output .origin
+```
+
+As you see Nix has encoded the executables used in the script by store paths
+(`/nix/store`).
+
+> [!NOTE]
+>
+> Do not think you can now simply share this script by giving the contents of
+> directory `/nix/store/7x9hf9g95d4wjjvq853x25jhakki63bz-what-is-my-ip` to
+> somebody else and it will work. This is not sufficient and is done
+> differently, namely over Nix itself, because Nix has all information.
+
+For that check the dependency graph with
 
 ```bash
 nix run github:craigmbooth/nix-visualize -- "$(nix build -f what-is-my-ip.nix --print-out-paths)"
