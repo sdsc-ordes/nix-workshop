@@ -191,10 +191,13 @@ As you see Nix has encoded the executables used in the script by store paths
 > somebody else and it will work. This is not sufficient and is done
 > differently, namely over Nix itself, because Nix has all information.
 
-For that check the dependency graph with
+For that check the dependency graph with `nix-visualize`:
 
 ```bash
-nix run github:craigmbooth/nix-visualize -- "$(nix build -f what-is-my-ip.nix --print-out-paths)"
+nix run github:craigmbooth/nix-visualize -- \
+  -c tools/configs/nix-visualize/config.ini
+  -s nix
+  "$(nix build -f what-is-my-ip.nix --print-out-paths)"
 ```
 
 and inspect the `frame.png`:
