@@ -310,11 +310,11 @@ flowchart TB
     C -->|"realize/build"| D["Output in<br><code>/nix/store/*</code>"]
 ```
 
-To inspect the `formatter.x86_64-linux` output from this repository’s
+To inspect the `formatter.x86_64-linux` output attribute from this repository’s
 [`flake.nix`](./flake.nix), run the following command:
 
 ```bash
-nix eval .#formatter.x86_64-linux
+nix eval ".#formatter.x86_64-linux"
 
 > «derivation /nix/store/72zknv2ssr8pkvf5jrc0g5w64bqjvyq1-treefmt.drv»
 ```
@@ -328,6 +328,92 @@ cat /nix/store/72zknv2ssr8pkvf5jrc0g5w64bqjvyq1-treefmt.drv
 The output of `/nix/store/72zknv2ssr8pkvf5jrc0g5w64bqjvyq1-treefmt.drv` above is
 the internal serialization of the formatter's derivation which **when built**
 can be used to format all files in this repository.
+
+You can also get that in a JSON form with
+
+```shell
+nix derivation show /nix/store/72zknv2ssr8pkvf5jrc0g5w64bqjvyq1-treefmt.drv
+```
+
+which gives
+
+```json
+{
+  "/nix/store/72zknv2ssr8pkvf5jrc0g5w64bqjvyq1-treefmt.drv": {
+    "args": [
+      "-e",
+      "/nix/store/v6x3cs394jgqfbi0a42pam708flxaphh-default-builder.sh"
+    ],
+    "builder": "/nix/store/8vpg72ik2kgxfj05lc56hkqrdrfl8xi9-bash-5.2p37/bin/bash",
+    "env": {
+      "__structuredAttrs": "",
+      "allowSubstitutes": "",
+      "buildCommand": "target=$out/bin/treefmt\nmkdir -p \"$(dirname \"$target\")\"\n\nif [ -e \"$textPath\" ]; then\n  mv \"$textPath\" \"$target\"\nelse\n  echo -n \"$text\" > \"$target\"\nfi\n\nif [ -n \"$executable\" ]; then\n  chmod +x \"$target\"\nfi\n\neval \"$checkPhase\"\n",
+      "buildInputs": "",
+      "builder": "/nix/store/8vpg72ik2kgxfj05lc56hkqrdrfl8xi9-bash-5.2p37/bin/bash",
+      "checkPhase": "/nix/store/8vpg72ik2kgxfj05lc56hkqrdrfl8xi9-bash-5.2p37/bin/bash -n -O extglob \"$target\"\n",
+      "cmakeFlags": "",
+      "configureFlags": "",
+      "depsBuildBuild": "",
+      "depsBuildBuildPropagated": "",
+      "depsBuildTarget": "",
+      "depsBuildTargetPropagated": "",
+      "depsHostHost": "",
+      "depsHostHostPropagated": "",
+      "depsTargetTarget": "",
+      "depsTargetTargetPropagated": "",
+      "doCheck": "",
+      "doInstallCheck": "",
+      "enableParallelBuilding": "1",
+      "enableParallelChecking": "1",
+      "enableParallelInstalling": "1",
+      "executable": "1",
+      "mesonFlags": "",
+      "name": "treefmt",
+      "nativeBuildInputs": "",
+      "out": "/nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt",
+      "outputs": "out",
+      "passAsFile": "buildCommand text",
+      "patches": "",
+      "preferLocalBuild": "1",
+      "propagatedBuildInputs": "",
+      "propagatedNativeBuildInputs": "",
+      "stdenv": "/nix/store/hsxp8g7zdr6wxk1mp812g8nbzvajzn4w-stdenv-linux",
+      "strictDeps": "",
+      "system": "x86_64-linux",
+      "text": "#!/nix/store/8vpg72ik2kgxfj05lc56hkqrdrfl8xi9-bash-5.2p37/bin/bash\nset -euo pipefail\nunset PRJ_ROOT\nexec /nix/store/0jcp33pgf85arjv3nbghws34mrmy7qq5-treefmt-2.1.0/bin/treefmt \\\n  --config-file=/nix/store/qk8rqccch6slk037dhnprryqwi8mv0xs-treefmt.toml \\\n  --tree-root-file=.git/config \\\n  \"$@\"\n\n"
+    },
+    "inputDrvs": {
+      "/nix/store/1fmb3b4cmr1bl1v6vgr8plw15rqw5jhf-treefmt.toml.drv": {
+        "dynamicOutputs": {},
+        "outputs": ["out"]
+      },
+      "/nix/store/3avbfsh9rjq8psqbbplv2da6dr679cib-treefmt-2.1.0.drv": {
+        "dynamicOutputs": {},
+        "outputs": ["out"]
+      },
+      "/nix/store/61fjldjpjn6n8b037xkvvrgjv4q8myhl-bash-5.2p37.drv": {
+        "dynamicOutputs": {},
+        "outputs": ["out"]
+      },
+      "/nix/store/gp6gh2jn0x7y7shdvvwxlza4r5bmh211-stdenv-linux.drv": {
+        "dynamicOutputs": {},
+        "outputs": ["out"]
+      }
+    },
+    "inputSrcs": [
+      "/nix/store/v6x3cs394jgqfbi0a42pam708flxaphh-default-builder.sh"
+    ],
+    "name": "treefmt",
+    "outputs": {
+      "out": {
+        "path": "/nix/store/5rvqlxk2vx0hx1yk8qdll2l8l62pfn8n-treefmt"
+      }
+    },
+    "system": "x86_64-linux"
+  }
+}
+```
 
 > [!NOTE]
 >
@@ -346,7 +432,7 @@ or
 
 ```bash
 nix build ".#formatter.x86_64-linux"
-# Use quoted strings here (`zsh` interprets # differently!"
+# Use quoted strings here (`zsh` interprets # differently!)
 ```
 
 This will by default produce a symlink `./result` pointing to the Nix store
