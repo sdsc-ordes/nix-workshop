@@ -304,8 +304,8 @@ As several concepts are being introduced, here is a visual reference showing how
 they relate to each other:
 
 ```mermaid
-flowchart LR
-    A["Flake<br><code>flake.nix</code>"] -->|"contains output"| B["Package<br>(Nix Expression)"]
+flowchart TB
+    A["Flake<br><code>flake.nix</code>"] -->|"contains output attribute"| B["<code>packages.x86_64-linux.mypackage</code><br>(Nix Expression)"]
     B -->|"evaluate"| C["Derivation<br>(<code>/nix/store/*.drv</code>)"]
     C -->|"realize/build"| D["Output in<br><code>/nix/store/*</code>"]
 ```
