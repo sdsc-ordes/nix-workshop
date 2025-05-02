@@ -215,9 +215,11 @@ Finish the slides to the end of the presentation.
 ### What is a Flake? (`flake.nix`)
 
 A [`flake.nix`](./flake.nix) provides a **deterministic** way to manage
-dependencies and configurations in Nix. In contrast to the function in
-`what-is-my-ip.nix` which hard-codes the `pkgs` to a certain commit on the
-`nixpkgs` repository, a flake is a better way to manage such locked inputs.
+dependencies and configurations in Nix
+[(Slide of the Nix Founder)](https://www.youtube.com/live/yhfDtRRTmY8?si=xTjOKKIWIZPIwoU3&t=18317).
+In contrast to the function in `what-is-my-ip.nix` which hard-codes the `pkgs`
+to a certain commit on the `nixpkgs` repository, a flake is a better way to
+manage such locked inputs.
 
 A flake references external Nix functions—called
 [**inputs**](https://nixos-and-flakes.thiscute.world/nixos-with-flakes/nixos-flake-configuration-explained#_1-flake-inputs)—which
