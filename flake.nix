@@ -44,7 +44,7 @@
     # Format the repo with nix-treefmt.
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgsUnstable";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     # Declarative Disk partitioning for VMs.
@@ -55,7 +55,7 @@
     # Age Encryption Tool for NixOS.
     agenix = {
       url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgsUnstable";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
