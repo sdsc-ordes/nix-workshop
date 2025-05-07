@@ -22,7 +22,7 @@
 
     # Nixpkgs (unstable stuff for certain packages.)
     # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
-    nixpkgsUnstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Index the nix-store with `nix-locate`.
     nix-index-database = {
@@ -60,13 +60,8 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      ...
-    }@inputs:
+    inputs:
     let
-      inherit (self) outputs;
 
       # Supported systems for your flake packages, shell, etc.
       systems = [
@@ -78,16 +73,16 @@
       ];
       # This is a function that generates an attribute by calling a function you
       # pass to it, with each system as an argument
-      forAllSystems = nixpkgs.lib.genAttrs systems;
+      forAllSystems = inputs.nixpkgs.lib.genAttrs systems;
 
       # Your custom packages: Accessible through 'nix build', 'nix shell', etc.
-      packages = forAllSystems (system: (import ./pkgs) nixpkgs.legacyPackages.${system});
+      packages = forAllSystems (system: (import ./pkgs) inputs.nixpkgs.legacyPackages.${system});
 
       # Formatter for all files.
       formatter = forAllSystems (
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = inputs.nixpkgs.legacyPackages.${system};
           treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
           treefmt = treefmtEval.config.build.wrapper;
         in
@@ -100,8 +95,12 @@
       # Reusable nixos modules you might want to export.
       nixosModules = import ./modules/nixos;
 
-      # NixOS configuration entrypoint: Available through 'nixos-rebuild --flake .#your-hostname'
-      nixosConfigurations = import ./nixos { inherit inputs outputs; };
+      # NixOSk configuration entrypoint: Available through 'nixos-rebuild --flake .#your-hostname'
+      nixosConfigurations =
+        let
+          inherit (inputs.self) outputs;
+        in
+        import ./nixos { inherit inputs outputs; };
 
       # The deploy configuration for `deploy-rs` tool to
       # push the VM to the cloud.
@@ -123,7 +122,7 @@
       devShells = forAllSystems (
         system:
         let
-          pkgs = (import inputs.nixpkgsUnstable) { inherit system; };
+          pkgs = inputs.nixpkgs-unstable.legacyPackages.${system};
         in
         {
           default = pkgs.mkShell {

@@ -12,9 +12,6 @@
   };
 
   inputs = {
-    # Nixpkgs (stuff for the system.)
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-
     # Nixpkgs (unstable stuff for certain packages.)
     # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -38,22 +35,36 @@
       # pass to it, with each system as an argument
       forAllSystems = nixpkgs.lib.genAttrs systems;
 
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = inputs.nixpkgs-unstable.legacyPackages.${system};
+        in
+        {
+          default = pkgs.mkShell {
+            packages = [
+              pkgs.skopeo
+              pkgs.cowsay
+            ];
+          };
+        }
+      );
+
       packages = forAllSystems (
         system:
         let
+          # That import is the same as the above.
           pkgs = (import inputs.nixpkgs-unstable) {
             inherit system;
           };
         in
         {
-          mypackage = pkgs.xz;
+          mypackage = pkgs.cowsay;
         }
       );
 
     in
     {
-      inherit
-        packages
-        ;
+      inherit packages devShells;
     };
 }
