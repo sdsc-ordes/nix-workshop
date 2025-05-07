@@ -57,12 +57,12 @@ This workshop is structured in 2 parts
 >
 > - [Nix Packages Search](https://search.nixos.org/packages?)
 > - [Nix Packages Search for Version Pinning](https://nixhub.io)
-> - [NixOS Manual](https://nixos.org/manual/nixos/stable/)
+> - [NixOS Manual](https://nixos.org/manual/nixos/stable)
 > - [NixOS Options Search](https://search.nixos.org/options?)
-> - [NixOS With Flakes](https://nixos-and-flakes.thiscute.world/nixos-with-flakes)
-> - [NixOS Status](https://status.nixos.org/)
+> - [NixOS With Flakes](https://nixos-and-flakes.thiscute.world)
+> - [NixOS Status](https://status.nixos.org)
 > - [Nixpkgs Pull Request Tracker](https://nixpk.gs/pr-tracker.html)
-> - [Nixpkgs-Lib Function Search](https://noogle.dev/)
+> - [Nixpkgs-Lib Function Search](https://noogle.dev)
 
 ## Requirements
 
@@ -307,9 +307,9 @@ they relate to each other:
 
 ```mermaid
 flowchart TB
-    A["Flake<br><code>flake.nix</code>"] -->|"contains output attribute"| B["<code>packages.x86_64-linux.mypackage</code><br>(Nix Expression)"]
-    B -->|"evaluate"| C["Derivation<br>(<code>/nix/store/*.drv</code>)"]
-    C -->|"realize/build"| D["Output in<br><code>/nix/store/*</code>"]
+    A["<strong>Flake</strong><br><code>flake.nix</code>"] -->|"contains output attribute"| B["<strong><code>packages.x86_64-linux.mypackage</code></strong><br>Nix Expression returning Derivation"]
+    B -->|"evaluate"| C["<strong>Store Derivation</strong><br><code>/nix/store/*.drv</code>"]
+    C -->|"realize/build"| D["<strong>Output</strong><br>in<code>/nix/store/*</code>"]
 ```
 
 To inspect the `formatter.x86_64-linux` output attribute from this repository’s

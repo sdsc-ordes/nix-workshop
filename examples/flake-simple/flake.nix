@@ -46,6 +46,10 @@
               pkgs.skopeo
               pkgs.cowsay
             ];
+
+            shellHook = ''
+              ${pkgs.cowsay}/bin/cowsay  "Hello from Shell"
+            '';
           };
         }
       );

@@ -25,6 +25,10 @@ format:
 repl:
     nix repl .
 
+# Run `nix eval` with Nix code on stdin. Use like `echo '3' | just eval`.
+eval:
+    @nix eval --file -
+
 # Run the NixOS VM image directly for `host` = (`$1` or '.env' file).
 run *args:
     #!/usr/bin/env bash
