@@ -61,9 +61,12 @@
           pkgs = (import inputs.nixpkgs-unstable) {
             inherit system;
           };
+
+          # Load some packages.
+          mypkgs = (import ./pkgs) pkgs;
         in
         {
-          mypackage = pkgs.cowsay;
+          inherit (mypkgs) mytool;
         }
       );
 

@@ -13,7 +13,13 @@ list:
     just --list --unsorted
 
 # Start a Nix dev. shell to work in this repository.
+alias dev := develop
 develop *args:
+    just nix-develop "default" "$@"
+
+# Start a Nix dev. shell to work on the VMs in this repository.
+alias dev := develop
+develop-vm *args:
     just nix-develop "default" "$@"
 
 # Format the whole repository.
@@ -57,7 +63,7 @@ build *args:
 
     sudo ./disko-image-script --build-memory 2048
 
-## Flake maintenance commands =================================================
+## Flake Maintenance commands =================================================
 # ==============================================================================
 # Update the flake lock file, use `update-single` for updating a single input.
 update *args:
@@ -66,8 +72,19 @@ update *args:
 # Update a single input in the lock file.
 update-single *args:
     cd "{{root_dir}}" && nix flake lock --update-input "$@"
+
+# Update all flakes in this repo.
+[private]
+update-all:
+    #!/usr/bin/env bash
+    readarray -t flakes < <(find . -name "flake.nix")
+    for flake in "${flakes[@]}"; do
+        cd "$(dirname "$flake")" && nix flake update
+    done
 # ==============================================================================
 
+## Nix Misc. Commands ==========================================================
+# ==============================================================================
 # Diff closures from `dest_ref` to `src_ref`. This builds and computes the NixOS closure which might take some time.
 diff-closure dest_ref="/" src_ref="origin/main" host="{{default_host}}":
     #!/usr/bin/env bash
@@ -84,8 +101,6 @@ diff-closure dest_ref="/" src_ref="origin/main" host="{{default_host}}":
 tree *args:
     nix-tree "$@"
 
-# NixOS commands on the VM.
-mod os "./tools/just/os.just"
 
 # Enter the nix development shell `$1` and execute the command `${@:2}`.
 [private]
@@ -97,8 +112,9 @@ nix-develop *args:
     args=("$@") && [ "${#args[@]}" != 0 ] || args="$shell"
     nix develop \
         --accept-flake-config \
-        --override-input devenv-root "path:.devenv/state/pwd" \
         "{{flake_dir}}#$shell" \
         --command "${args[@]}"
 
+# NixOS commands on the VM.
+mod os "./tools/just/os.just"
 # ==============================================================================

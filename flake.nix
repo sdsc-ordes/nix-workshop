@@ -75,9 +75,6 @@
       # pass to it, with each system as an argument
       forAllSystems = inputs.nixpkgs.lib.genAttrs systems;
 
-      # Your custom packages: Accessible through 'nix build', 'nix shell', etc.
-      packages = forAllSystems (system: (import ./pkgs) inputs.nixpkgs.legacyPackages.${system});
-
       # Formatter for all files.
       formatter = forAllSystems (
         system:
@@ -87,6 +84,15 @@
           treefmt = treefmtEval.config.build.wrapper;
         in
         treefmt
+      );
+
+      # Your custom packages: Accessible through 'nix build', 'nix shell', etc.
+      packages = forAllSystems (
+        system:
+        let
+          myPkgs = (import ./pkgs) inputs.nixpkgs.legacyPackages.${system};
+        in
+        myPkgs // { treefmt = inputs.self.outputs.formatter.${system}; }
       );
 
       # Your custom packages and modifications, exported as overlays
@@ -123,12 +129,18 @@
         system:
         let
           pkgs = inputs.nixpkgs-unstable.legacyPackages.${system};
+          defaultPkgs = [
+            pkgs.nix-output-monitor
+            pkgs.just
+          ];
         in
         {
           default = pkgs.mkShell {
-            packages = [
-              pkgs.nix-output-monitor
-              pkgs.just
+            packages = defaultPkgs;
+          };
+
+          vm = pkgs.mkShell {
+            packages = defaultPkgs ++ [
               pkgs.virt-manager
               pkgs.virt-viewer
             ];
