@@ -13,7 +13,6 @@ list:
     just --list --unsorted
 
 # Start a Nix dev. shell to work in this repository.
-alias dev := develop
 develop *args:
     just nix-develop "default" "$@"
 
