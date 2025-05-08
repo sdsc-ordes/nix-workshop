@@ -18,7 +18,6 @@ develop *args:
     just nix-develop "default" "$@"
 
 # Start a Nix dev. shell to work on the VMs in this repository.
-alias dev := develop
 develop-vm *args:
     just nix-develop "default" "$@"
 
