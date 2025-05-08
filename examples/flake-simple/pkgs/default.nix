@@ -7,4 +7,6 @@
     "${pkgs.figlet}/bin/figlet" "something "
     "${pkgs.figlet}/bin/figlet" "useful ? "
   '';
+
+  banana-icecream = pkgs.cowsay;
 }

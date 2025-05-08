@@ -66,7 +66,7 @@
           mypkgs = (import ./pkgs) pkgs;
         in
         {
-          inherit (mypkgs) mytool;
+          inherit (mypkgs) mytool banana-icecream;
         }
       );
 
