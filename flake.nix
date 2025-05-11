@@ -132,6 +132,7 @@
           defaultPkgs = [
             pkgs.nix-output-monitor
             pkgs.just
+            pkgs.graphviz
           ];
         in
         {
