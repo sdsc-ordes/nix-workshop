@@ -60,15 +60,31 @@ This workshop is structured in 2 parts
 
 ## Requirements
 
+The basic requirements for working with this repository are one of the
+following:
+
+- **Use your machine**
+
 Ensure that you have installed
 [`Nix`](https://swissdatasciencecenter.github.io/best-practice-documentation/docs/dev-enablement/nix-and-nixos#installing-nix)
 and optionally
 [`direnv`](https://swissdatasciencecenter.github.io/best-practice-documentation/docs/dev-enablement/nix-and-nixos#installing-direnv).
 
-The basic requirements for working with this repository are:
+- **Use the container**
 
-- `nix`
-- `just` (optional but handy)
+You can run most of the workshop inside the provided container by running in the
+root of this repository
+
+```shell
+podman run -it --userns=keep-id -v "$(pwd):/workspace" ghcr.io/sdsc-ordes/nix-workshop:latest
+```
+
+- **Use the `devcontainer`**
+
+A `devcontainer` setup is given in [`.devcontainer`](./.devcontainer). You can
+start this with `code`. **Adjust the
+[`devontainer.json`](./.devcontainer/devcontainer.json) if you are using
+`docker` instead of `podman`**.
 
 ## Part 1 - Nix, Flakes & Nix DevShell
 

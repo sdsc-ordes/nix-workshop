@@ -1,7 +1,6 @@
 {
     "name": "DevContainer for Nix Workshop",
-    "dockerFile": "Containerfile",
-    "service": "dev",
+    "image": "ghcr.io/sdsc-ordes/nix-workshop:latest",
     "workspaceFolder": "/workspace",
     "customizations": {
         "vscode": {
@@ -15,9 +14,11 @@
         }
     },
     "runArgs": [
+        // For a docker setup outcomment this line:
         "--userns=keep-id",
         "-v",
         "..:/workspace"
     ],
+    // For a docker setup use `root`:
     "remoteUser": "dev"
 }

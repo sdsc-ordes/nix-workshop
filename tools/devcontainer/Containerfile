@@ -2,12 +2,10 @@ FROM ubuntu:latest
 
 # Install prerequisites.
 RUN apt-get update && apt-get install -y \
-    curl xz-utils git sudo zsh figlet \
+    curl xz-utils git sudo zsh figlet just \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USER_NAME=dev
-# As which user to run the container (use `root` for docker)
-ARG USER_NAME_RUN=dev
 
 ARG USER_PASSWORD=dev
 ARG USER_UID=1000
@@ -32,21 +30,24 @@ RUN groupadd -g "$USER_GID" "$USER_NAME" && \
     "$USER_NAME" && \
     passwd -d "$USER_NAME"
 
-# Install Nix via Determinate Systems installer (daemon mode)
-RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | \
-    sh -s -- install linux \
-    --extra-conf "sandbox = false" \
-    --init none \
-    --no-confirm
-ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
-
 COPY setup/common $CONTAINER_SETUP_DIR/common
 RUN chown -R "$USER_NAME:$USER_NAME" /home "$CONTAINER_SETUP_DIR"
-USER $USER_NAME_RUN
 
-# Add Zsh Shell and plugins.
+# Add ZSH shell and plugins for root user.
 COPY --chown=$USER_NAME:$USER_NAME setup/setup-zsh.sh $CONTAINER_SETUP_DIR/
 COPY --chown=$USER_NAME:$USER_NAME setup/shell $CONTAINER_SETUP_DIR/shell/
+RUN chmod +x $CONTAINER_SETUP_DIR/setup-zsh.sh && \
+    $CONTAINER_SETUP_DIR/setup-zsh.sh "$PATH"
+
+USER $USER_NAME
+
+# Setup Nix.
+COPY --chown=$USER_NAME:$USER_NAME setup/setup-nix.sh $CONTAINER_SETUP_DIR/
+RUN chmod +x $CONTAINER_SETUP_DIR/setup-nix.sh && \
+    $CONTAINER_SETUP_DIR/setup-nix.sh
+ENV PATH="/home/$USER_NAME/.nix-profile/bin:$PATH"
+
+# Add ZSH shell and plugins for user as well.
 RUN chmod +x $CONTAINER_SETUP_DIR/setup-zsh.sh && \
     $CONTAINER_SETUP_DIR/setup-zsh.sh "$PATH"
 

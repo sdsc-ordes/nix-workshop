@@ -89,3 +89,8 @@ bindkey "^[[75;5u"  znt-kill-widget
 if [ -f ~/.shell-entry-splash.sh ]; then
     ~/.shell-entry-splash.sh "$(echo "$CONTAINER_NAME" | sed -E 's/-/ /g')"
 fi
+
+# Load necessary Nix variables
+if [ -f ~/.nix-profile/etc/profile.d/nix.sh ]; then
+  . ~/.nix-profile/etc/profile.d/nix.sh
+fi

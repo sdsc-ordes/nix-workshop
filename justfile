@@ -89,7 +89,7 @@ build-dev-container *args:
       "{{container_mgr}}" build \
       --build-arg "REPOSITORY_COMMIT_SHA=$(git rev-parse --short=11 HEAD)" \
       -f Containerfile \
-      -t nix-workshop:latest \
+      -t ghcr.io/sdsc-ordes/nix-workshop:latest \
       "$@" \
       .
 
