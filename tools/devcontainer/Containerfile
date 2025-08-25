@@ -1,0 +1,61 @@
+FROM ubuntu:latest
+
+# Install prerequisites.
+RUN apt-get update && apt-get install -y \
+    curl xz-utils git sudo zsh \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG USER_NAME=dev
+
+ARG USER_PASSWORD=dev
+ARG USER_UID=1000
+ARG USER_GID=1000
+ARG REPOSITORY_COMMIT_SHA
+
+ENV CONTAINER_NAME="Nix Workshop"
+ENV CONTAINER_BUILD_AUTHOR="Gabriel Nützi"
+ENV CONTAINER_BUILD_REVIEWER="Cyril Matthey-Doret"
+ENV CONTAINER_REPOSITORY_COMMIT_SHA="$REPOSITORY_COMMIT_SHA"
+ENV CONTAINER_BUILD_VERSION="1.0.0"
+ENV CONTAINER_SETUP_DIR="/container-setup"
+
+# Create a non-root user with passwordless sudo
+RUN deluser --remove-home ubuntu
+RUN groupadd -g "$USER_GID" "$USER_NAME" && \
+    useradd -p "$(openssl passwd -1 "$USER_PASSWORD")" \
+    -G sudo \
+    -u "$USER_UID" \
+    -g "$USER_GID" \
+    -m --shell /bin/zsh \
+    "$USER_NAME" && \
+    passwd -d "$USER_NAME"
+
+COPY setup/common $CONTAINER_SETUP_DIR/common
+RUN chown -R "$USER_NAME:$USER_NAME" /home "$CONTAINER_SETUP_DIR"
+
+# Add ZSH shell and plugins for root user.
+COPY --chown=$USER_NAME:$USER_NAME setup/setup-zsh.sh $CONTAINER_SETUP_DIR/
+COPY --chown=$USER_NAME:$USER_NAME setup/shell $CONTAINER_SETUP_DIR/shell/
+RUN chmod +x $CONTAINER_SETUP_DIR/setup-zsh.sh && \
+    $CONTAINER_SETUP_DIR/setup-zsh.sh "$PATH"
+
+USER $USER_NAME
+
+# Setup Nix.
+COPY --chown=$USER_NAME:$USER_NAME setup/setup-nix.sh $CONTAINER_SETUP_DIR/
+RUN chmod +x $CONTAINER_SETUP_DIR/setup-nix.sh && \
+    $CONTAINER_SETUP_DIR/setup-nix.sh
+ENV PATH="/home/$USER_NAME/.nix-profile/bin:$PATH"
+
+# Add ZSH shell and plugins for user as well.
+RUN chmod +x $CONTAINER_SETUP_DIR/setup-zsh.sh && \
+    $CONTAINER_SETUP_DIR/setup-zsh.sh "$PATH"
+
+# Add some essentials.
+COPY --chown=$USER_NAME:$USER_NAME setup/setup-essentials.sh $CONTAINER_SETUP_DIR/
+RUN chmod +x $CONTAINER_SETUP_DIR/setup-essentials.sh && \
+    $CONTAINER_SETUP_DIR/setup-essentials.sh "$PATH"
+
+WORKDIR /workspace
+
+CMD ["zsh"]

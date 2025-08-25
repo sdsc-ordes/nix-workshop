@@ -1,27 +1,26 @@
 # We rely on a devenv  module to setup golang.
 # This keeps the config simple, while setting up all the required tooling for vscode etc.
-{pkgs}: [
-  {
-    packages = with pkgs; [
-      coreutils
-      curl
-      fd
-      findutils
-      git
-      just
-    ];
+{ pkgs, ... }:
+{
+  packages = with pkgs; [
+    coreutils
+    curl
+    fd
+    findutils
+    git
+    just
+  ];
 
-    languages.go = {
-      enable = true;
-      package = pkgs.go;
-    };
+  languages.go = {
+    enable = true;
+    package = pkgs.go;
+  };
 
-    env = {
-      EXAMPLE_ENV_VAR = "MY_VALUE";
-    };
+  env = {
+    EXAMPLE_ENV_VAR = "MY_VALUE";
+  };
 
-    enterShell = ''
-      echo "🐹 Running: $(go version) 🐹"
-    '';
-  }
-]
+  enterShell = ''
+    echo "🐹 Running: $(go version) 🐹"
+  '';
+}

@@ -1,22 +1,30 @@
 # TODOS
 
-- [ ] For the announcemnt:
+- [ ] For the announcement:
 
-  - Include the requirements slide.
-  - Say that windows user either should try installing Nix in WSL or Docker
-    container with base image `ubuntu:latest`.
+  We will explore how Nix is able to give you stable/deterministic developer
+  environments and package builds with ease. The workshop is targeted at
+  Linux/macOS users (Windows user can try to install on WSL). It is recommended
+  that you install Nix on your system before the workshop.
+
+  **Preliminaries**:
+
+  - All work will be conducted in the
+    [workshop repository](https://github.com/sdsc-ordes/nix-workshop).
+
+  - Ensure that you have installed
+
+    - A working shell.
+
+    - [`Nix` installed](https://zero-to-nix.com/start/install). You can alsok
+
+    - Optionally
+      [`direnv` configured in your shell](https://swissdatasciencecenter.github.io/best-practice-documentation/docs/dev-enablement/nix-and-nixos#installing-direnv).
 
 - [ ] CSS styling copy-button on `<pre>`.
 
-- [ ] Workshop
+  ````
+  ```nix {.copy-button}
 
-  - [ ] Rust Flake with devenv, not too much features.
-
-    - build like exam questions with hints what to use, dont give away too much.
-    - add packages, lazygit
-
-      - add nixhub pinned input to lazygit, check the version
-
-    - add rust toolchain or go compiler
-    - make package, put it in `packages =`.
-    - bonus: image.
+  ```
+  ````

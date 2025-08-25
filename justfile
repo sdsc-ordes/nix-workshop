@@ -7,6 +7,8 @@ flake_dir := root_dir
 
 # The host for which most commands work below.
 default_host := env("NIXOS_HOST", "vm")
+# You can chose either "podman" or "docker"
+container_mgr := env("CONTAINER_MGR", "podman")
 
 # Default command to list all commands.
 list:
@@ -80,6 +82,16 @@ update-all:
         cd "$(dirname "$flake")" && nix flake update
     done
 # ==============================================================================
+
+# Build the container for `.devcontainer`.
+build-dev-container *args:
+    cd "{{root_dir}}/tools/devcontainer" && \
+      "{{container_mgr}}" build \
+      --build-arg "REPOSITORY_COMMIT_SHA=$(git rev-parse --short=11 HEAD)" \
+      -f Containerfile \
+      -t ghcr.io/sdsc-ordes/nix-workshop:latest \
+      "$@" \
+      .
 
 ## Nix Misc. Commands ==========================================================
 # ==============================================================================
