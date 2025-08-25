@@ -1,0 +1,23 @@
+{
+    "name": "DevContainer for Nix Workshop",
+    "dockerFile": "Containerfile",
+    "service": "dev",
+    "workspaceFolder": "/workspace",
+    "customizations": {
+        "vscode": {
+            "settings": {},
+            "extensions": [
+                "foxundermoon.shell-format",
+                "timonwong.shellcheck",
+                "EditorConfig.EditorConfig",
+                "esbenp.prettier-vscode"
+            ]
+        }
+    },
+    "runArgs": [
+        "--userns=keep-id",
+        "-v",
+        "..:/workspace"
+    ],
+    "remoteUser": "dev"
+}

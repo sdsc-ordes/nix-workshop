@@ -62,13 +62,13 @@ This workshop is structured in 2 parts
 
 Ensure that you have installed
 [`Nix`](https://swissdatasciencecenter.github.io/best-practice-documentation/docs/dev-enablement/nix-and-nixos#installing-nix)
-and
+and optionally
 [`direnv`](https://swissdatasciencecenter.github.io/best-practice-documentation/docs/dev-enablement/nix-and-nixos#installing-direnv).
 
 The basic requirements for working with this repository are:
 
-- `just`
 - `nix`
+- `just` (optional but handy)
 
 ## Part 1 - Nix, Flakes & Nix DevShell
 

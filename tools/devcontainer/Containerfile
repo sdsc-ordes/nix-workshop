@@ -1,0 +1,53 @@
+FROM ubuntu:latest
+
+# Install prerequisites.
+RUN apt-get update && apt-get install -y \
+    curl xz-utils git sudo zsh figlet \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG USER_NAME=dev
+# As which user to run the container (use `root` for docker)
+ARG USER_NAME_RUN=dev
+
+ARG USER_PASSWORD=dev
+ARG USER_UID=1000
+ARG USER_GID=1000
+ARG REPOSITORY_COMMIT_SHA
+
+ENV CONTAINER_NAME="Nix Workshop"
+ENV CONTAINER_BUILD_AUTHOR="Gabriel Nützi"
+ENV CONTAINER_BUILD_REVIEWER="Cyril Matthey-Doret"
+ENV CONTAINER_REPOSITORY_COMMIT_SHA="$REPOSITORY_COMMIT_SHA"
+ENV CONTAINER_BUILD_VERSION="1.0.0"
+ENV CONTAINER_SETUP_DIR="/container-setup"
+
+# Create a non-root user with passwordless sudo
+RUN deluser --remove-home ubuntu
+RUN groupadd -g "$USER_GID" "$USER_NAME" && \
+    useradd -p "$(openssl passwd -1 "$USER_PASSWORD")" \
+    -G sudo \
+    -u "$USER_UID" \
+    -g "$USER_GID" \
+    -m --shell /bin/zsh \
+    "$USER_NAME" && \
+    passwd -d "$USER_NAME"
+
+# Install Nix via Determinate Systems installer (daemon mode)
+RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | \
+    sh -s -- install linux \
+    --extra-conf "sandbox = false" \
+    --init none \
+    --no-confirm
+ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
+
+COPY setup/common $CONTAINER_SETUP_DIR/common
+RUN chown -R "$USER_NAME:$USER_NAME" /home "$CONTAINER_SETUP_DIR"
+USER $USER_NAME_RUN
+
+# Add Zsh Shell and plugins.
+COPY --chown=$USER_NAME:$USER_NAME setup/setup-zsh.sh $CONTAINER_SETUP_DIR/
+COPY --chown=$USER_NAME:$USER_NAME setup/shell $CONTAINER_SETUP_DIR/shell/
+RUN chmod +x $CONTAINER_SETUP_DIR/setup-zsh.sh && \
+    $CONTAINER_SETUP_DIR/setup-zsh.sh "$PATH"
+
+CMD ["zsh"]
