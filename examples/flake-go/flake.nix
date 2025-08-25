@@ -20,16 +20,16 @@
       devenv,
     }:
     let
-      forAllSystems = import ./nix/systems.nix;
+      l = import ./nix/lib.nix; # Import our functions.
     in
     {
-      packages = forAllSystems {
-        pkgs = nixpkgs;
+      packages = l.forAllSystems {
+        inherit nixpkgs;
         func = import ./nix/package.nix;
       };
 
-      devShells = forAllSystems {
-        pkgs = nixpkgs;
+      devShells = l.forAllSystems {
+        inherit nixpkgs;
         func =
           { pkgs, ... }:
           {
