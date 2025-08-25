@@ -94,3 +94,8 @@ fi
 if [ -f ~/.nix-profile/etc/profile.d/nix.sh ]; then
   . ~/.nix-profile/etc/profile.d/nix.sh
 fi
+
+# Direnv hook.
+if command -v direnv &>/dev/null; then
+    eval "$(direnv hook zsh)"
+fi

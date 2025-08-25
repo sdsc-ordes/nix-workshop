@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 # Install prerequisites.
 RUN apt-get update && apt-get install -y \
-    curl xz-utils git sudo zsh figlet just \
+    curl xz-utils git sudo zsh \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USER_NAME=dev
@@ -50,5 +50,10 @@ ENV PATH="/home/$USER_NAME/.nix-profile/bin:$PATH"
 # Add ZSH shell and plugins for user as well.
 RUN chmod +x $CONTAINER_SETUP_DIR/setup-zsh.sh && \
     $CONTAINER_SETUP_DIR/setup-zsh.sh "$PATH"
+
+# Add some essentials.
+COPY --chown=$USER_NAME:$USER_NAME setup/setup-essentials.sh $CONTAINER_SETUP_DIR/
+RUN chmod +x $CONTAINER_SETUP_DIR/setup-essentials.sh && \
+    $CONTAINER_SETUP_DIR/setup-essentials.sh "$PATH"
 
 CMD ["zsh"]
