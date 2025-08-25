@@ -56,4 +56,6 @@ COPY --chown=$USER_NAME:$USER_NAME setup/setup-essentials.sh $CONTAINER_SETUP_DI
 RUN chmod +x $CONTAINER_SETUP_DIR/setup-essentials.sh && \
     $CONTAINER_SETUP_DIR/setup-essentials.sh "$PATH"
 
+WORKDIR /workspace
+
 CMD ["zsh"]
