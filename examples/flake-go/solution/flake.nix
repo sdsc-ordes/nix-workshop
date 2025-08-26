@@ -10,7 +10,7 @@
   };
   inputs = {
     devenv.url = "github:cachix/devenv";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05"; # or another channel
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # or another channel
   };
 
   outputs =
