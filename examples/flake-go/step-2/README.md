@@ -44,19 +44,21 @@
    system `system`) also to `func`, e.g. `func {system, pkgs}` (instead of only
    `system`):
 
-   Hint: The signatures of the two functions looks like.
+   **Hint:** The signatures of the two functions looks like.
 
    ```nix
    forAllSystems :: {func, nixpkgs} -> AttrSet
    func :: {system, pkgs} -> AttrSet
    ```
 
-3. Move that function into a file `lib.nix` and import that file in the
-   `flake.nix` and use it to populate the flake output `packages` with some a
-   field `my-fancy-app` which points to
+3. Move that function into a file `nix/lib.nix` and import that file in the
+   `flake.nix` and use it to populate the flake output
+   `packages.<system>.my-fancy-app` which points to
    [`cowsay`](https://search.nixos.org/packages?channel=25.05&show=cowsay&query=cowsay)
-   (or another derivation of your liking).
+   or another derivation of your liking.
+
+   **Hint:** `import <path>`.
 
 4. Run the app.
 
-   Hint: Use `nix run`.
+   **Hint:** Use `nix run`.
