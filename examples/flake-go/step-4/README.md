@@ -43,7 +43,7 @@
 
 3. Run the shell and try to compile & run the application in `./src`.
 
-   **Hint:** `cd ./src` and `go run main.go`
+   **Hint:** `go run`
 
 4. Optional, but very handy: if you configured [`direnv`] for your shell the
    file `.envrc` will let you activate the Nix shell when entering the
