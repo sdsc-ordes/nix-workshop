@@ -1,4 +1,4 @@
-# Step 4 - Build a DevShell with [`devenv.sh`](https://devenv.sh)
+# Step 4 - Build a Nix Shell with [`devenv.sh`](https://devenv.sh)
 
 ## Exercises
 

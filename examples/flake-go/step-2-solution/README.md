@@ -1,4 +1,4 @@
-# Step 2 - Setup a DevShell with [`devenv.sh`](https://devenv.sh)
+# Step 2 - Write a Function `forAllSystems`
 
 ## Exercises
 

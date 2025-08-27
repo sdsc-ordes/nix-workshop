@@ -1,6 +1,6 @@
-# Step 6 - Add your custom options to a DevShell with [`devenv.sh`](https://devenv.sh)
+# Step 6 - Add Custom Options to a DevShell With [`devenv.sh`](https://devenv.sh)
 
-This step is optional and only for the curious users.
+This step is optional and only for the curious.
 
 ## Exercises
 

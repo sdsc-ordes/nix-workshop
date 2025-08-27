@@ -1,4 +1,4 @@
-# Step 5 - Extend a DevShell with [`devenv.sh`](https://devenv.sh)
+# Step 6 - Add Custom Options to a [`devenv.sh`](https://devenv.sh) Nix Shell
 
 ## Exercises
 
