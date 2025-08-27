@@ -20,12 +20,19 @@
           {
             my-fancy-app = pkgs.cowsay;
 
+            # Exercise 2.
             default = pkgs.buildGoModule {
               name = "go-demo";
               version = "0.1.0";
               src = ./src;
               modRoot = ".";
               vendorHash = "sha256-Nm5G4bEFwgA2+5Octhn2s6vquNtwQ82Z4bevZ5R20vU=";
+            };
+
+            # Exercise 3.
+            default-other = import ./nix/package.nix {
+              inherit pkgs;
+              rootDir = ./.; # This is a type `path`.
             };
           };
       };

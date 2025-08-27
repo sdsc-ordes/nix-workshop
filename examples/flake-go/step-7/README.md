@@ -56,3 +56,11 @@ derivation which you will expose as package on the [`./flake.nix`](./flake.nix).
    - `nix build` with `-L` and `--out-link ...` flag.
 
    Inspect and run the built derivation.
+
+3. Move the `pkgs.buildGoModule` code from the [`flake.nix`](./flake.nix) into a
+   separate file `./nix/package.nix` and import it at the caller site. Also pass
+   the root directory path as `rootDir` to `./nix/package.nix` to adjust the
+   `src = ...` variable.
+
+   When `pkgs.buildGoModule` uses the value of `src`, what path (where is it?)
+   does it get?
