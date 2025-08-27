@@ -2,63 +2,58 @@
 
 ## Exercises
 
-1. Write a function `forAllSystems` which takes 1 argument:
+### 1. **Write a `forAllSystems` function which:**
 
-   - a function `func`
-     ```nix
-     f :: AttrSet -> AttrSet
-     ```
-     which takes an attribute set and returns another.
+  - takes one argument `func`
+  - calls `func` for all `supportedSystems`
+  - returns the result
 
-   and calls `func` for all `supportedSystems`:
-
+   **Remember the nix function syntax:**
+   ```nix
+   myFunction = argument: 
+     let
+       # variables here
+     in
+       # result here
+   ```
+   
+   **Define supported systems:**
    ```nix
    supportedSystems = [
-     "aarch64-darwin"
-     "aarch64-linux"
-     "x86_64-darwin"
-     "x86_64-linux"
+     "aarch64-darwin"  # Apple Silicon Macs
+     "aarch64-linux"   # ARM Linux
+     "x86_64-darwin"   # Intel Macs  
+     "x86_64-linux"    # Intel/AMD Linux
    ];
    ```
-
-   resulting in
-
-   ```nix
-   {
-     "aarch64-linux" = f {};
-     "aarch64-darwin" = f {};
-     "x86_64-darwin" = f {};
-     "x86_64-linux" = f {};
-   }
-   ```
-
-   Hints:
-
-   - Use `nix repl` and load the flake `:lf .`
+  **Hints:**
+   
    - Use `inputs.nixpkgs.lib` and
      [`lib.genAttrs`](https://noogle.dev/f/lib/genAttrs).
-   - `let ... in` blocks.
 
-2. Extend the function `forAllSystems` by taking an attribute set as input
-   `{func, nixpkgs}` and passing the packages set `pkgs` from `nixpkgs` (for the
-   system `system`) also to `func`, e.g. `func {system, pkgs}` (instead of only
-   `system`):
+### 2. **Enhance the function to provide access to packages which:**
 
-   **Hint:** The signatures of the two functions looks like.
+   - takes an attribute set `{func, nixpkgs}` as input
+   - passes `{system, pkgs}` to `func` instead of just `system`
+   - returns the same structure as before
 
+   **Function signatures:**
    ```nix
    forAllSystems :: {func, nixpkgs} -> AttrSet
    func :: {system, pkgs} -> AttrSet
    ```
 
-3. Move that function into a file `nix/lib.nix` and import that file in the
-   `flake.nix` and use it to populate the flake output
-   `packages.<system>.my-fancy-app` which points to
-   [`cowsay`](https://search.nixos.org/packages?channel=25.05&show=cowsay&query=cowsay)
-   or another derivation of your liking.
+### 3. **Move function to `nix/lib.nix` to:**
 
-   **Hint:** `import <path>`.
+   - create a separate file for the function
+   - import and use it in `flake.nix` 
+   - create a `packages` output with [`cowsay`](https://search.nixos.org/packages?channel=25.05&show=cowsay&query=cowsay) or another derivation of your liking.
 
-4. Run the app.
+   **Hint:** `import <path>`
 
-   **Hint:** Use `nix run`.
+### 4. **Test the package which:**
+
+   - runs the created package
+   - verifies everything works
+
+   **Hint:** Use `nix run`
