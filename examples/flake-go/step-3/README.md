@@ -67,7 +67,7 @@
 
    **Now:** Generate an output `devShells.<system>.default` with `forAllSystem`
    which results to a `mkShell` call. Pass `modules` of `mkShell` a path to
-   `./nix/go.nix` which contains an empty attribute set for now.
+   `nix/go.nix` which contains an empty attribute set for now.
 
 3. Test the shell by entering it.
 

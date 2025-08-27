@@ -74,7 +74,7 @@
    > `bin/demo` due to how Go builds executables and how `pkgs.buildGoModule`
    > behaves.
 
-3. See [`package.nix`](./nix/package.nix).
+3. See [`package.nix`](nix/package.nix).
 
    > [!NOTE]
    >

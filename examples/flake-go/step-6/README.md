@@ -27,7 +27,7 @@ This step is optional and only for the curious.
    - To make things conditional
      [`lib.mkIf`](https://noogle.dev/f/lib/modules/mkIf).
 
-2. Import the new module in [`./nix/go.nix`](./nix/go.nix) with the new
+2. Import the new module in [`nix/go.nix`](nix/go.nix) with the new
    top-level option `imports` (lets you import other `devenv` modules):
 
    ```nix
@@ -36,6 +36,6 @@ This step is optional and only for the curious.
    ];
    ```
 
-   Finally use the option in `./nix/go.nix`.
+   Finally use the option in `nix/go.nix`.
 
 3. Enter the shell and run the executable `run-it`.

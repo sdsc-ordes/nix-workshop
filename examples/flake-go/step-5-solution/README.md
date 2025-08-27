@@ -2,6 +2,6 @@
 
 ## Exercises
 
-1. See [`./nix/go.nix`](./nix/go.nix).
-2. See [`./nix/go.nix`](./nix/go.nix).
-3. See [`./nix/go.nix`](./nix/go.nix).
+1. See [`nix/go.nix`](nix/go.nix).
+2. See [`nix/go.nix`](nix/go.nix).
+3. See [`nix/go.nix`](nix/go.nix).
