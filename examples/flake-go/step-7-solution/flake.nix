@@ -18,8 +18,6 @@
         func =
           { pkgs, ... }:
           {
-            my-fancy-app = pkgs.cowsay;
-
             # Exercise 2.
             default = pkgs.buildGoModule {
               name = "go-demo";

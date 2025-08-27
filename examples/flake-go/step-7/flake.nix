@@ -18,7 +18,8 @@
         func =
           { pkgs, ... }:
           {
-            my-fancy-app = pkgs.cowsay;
+            # TODO
+            # default =
           };
       };
 
