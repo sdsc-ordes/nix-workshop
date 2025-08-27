@@ -1,4 +1,4 @@
-# Step 8 - Use `override` to Exchange The go Compiler
+# Step 8 - Version Pin The Go Compiler
 
 This step is optional and only for the curious.
 
@@ -11,7 +11,7 @@ This step is optional and only for the curious.
 
 3. See [`nix/package.nix`](nix/package.nix).
 
-   > [!NOTE] See [`nix/package-overide.nix`](nix/package-overide.nix) You can
+   > [!TIP] See [`nix/package-overide.nix`](nix/package-overide.nix) You can
    > achieve the same by using `pkgs.buildGoModule` still from `pkgs` of the
    > unstable `inputs.nixpkgs` but with older compiler:
    >
@@ -37,3 +37,6 @@ This step is optional and only for the curious.
    >   stdenv,
    > }: ...
    > ```
+   >
+   > **Note the fact that our build-support function depends on `git`. Of course
+   > cause `go get` needs to download packages over `git`.**

@@ -1,4 +1,4 @@
-# Step 8 - Use `override` to Exchange The go Compiler
+# Step 8 - Version Pin The Go Compiler
 
 This step is optional and only for the curious.
 
@@ -29,4 +29,3 @@ This step is optional and only for the curious.
    Hint: `direnv reload` if using `direnv`
 
 3. Make the [`nix/package.nix`](nix/package.nix) use `pkgsGo.buildModule`.
-
