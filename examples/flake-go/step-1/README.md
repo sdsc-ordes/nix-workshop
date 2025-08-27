@@ -4,24 +4,43 @@
 
 1. **Create a branch on the repository, e.g. `feat/solution-gabriel-nuetzi`.**
 
-2. Extend the `flake.nix` file by
+2. **Extend the `flake.nix` file by:**
 
-- Adding a proper description.
+   **a) Adding a description:** 
+   
+   Add a `description` field that explains what this flake does. The description should be a clear, one-sentence summary. 
+   This description will appear when someone runs `nix flake show` and helps others understand the purpose of your flake.
 
-- Populating it with the `inputs`:
-
-  ```nix
-  inputs = {
-    devenv.url = "github:cachix/devenv";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # or another channel
-  };
-  ```
+   **b) Adding the required inputs:**
+   
+   Add an `inputs` section that tells Nix which external flakes and package repositories you depend on:
+   ```nix
+   inputs = {
+     devenv.url = "github:cachix/devenv";
+     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # or another channel
+   };
+   ```
+   
+   - `devenv` provides tools for creating development environments
+   - `nixpkgs` is the main Nix package repository containing thousands of packages
 
 > [!NOTE]
 >
-> You need to always **add all files** to Git with `git add .` otherwise and
-> `nix` invocation will not **see** these file!
+> You need to always **add all files** to Git with `git add .` otherwise 
+> `nix` invocation will not **see** these files!
 
-3. Create the lock file `flake.lock`. Hints: `nix flake --help`.
+3. **Create the lock file `flake.lock`.**
 
-4. Run `nix flake show` and inspect the output. Why is it empty?
+   The `flake.lock` pins the exact versions of your inputs. 
+   Run this command for some help. 
+   ```bash
+   nix flake --help
+   ```
+  
+   
+
+4. **Run `nix flake show` and inspect the output. Why is it empty?**
+   
+   ```bash
+   nix flake show
+   ```
