@@ -9,7 +9,7 @@ let
 in
 {
   default = pkgs.buildGoModule {
-    pname = "go-demo";
+    name = "go-demo";
     version = "0.1.0";
     src = goSrc;
 

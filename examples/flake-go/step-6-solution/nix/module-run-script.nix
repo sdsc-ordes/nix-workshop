@@ -1,3 +1,5 @@
+# Devenv Module function which declares some custom option `nix-workshop.run-script`
+# and implements its behavior.
 {
   config,
   lib,
@@ -12,8 +14,6 @@ in
 
   # Declare new options here.
   options = {
-    # You can create modules with only this option
-    # which lets you customize behavior on top.
     # This `run-script` options enables a `script`
     # which contains the build. This a bit meaningless, but only
     # here for demonstration purposes.
