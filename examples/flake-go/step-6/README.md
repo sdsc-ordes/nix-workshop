@@ -27,8 +27,8 @@ This step is optional and only for the curious.
    - To make things conditional
      [`lib.mkIf`](https://noogle.dev/f/lib/modules/mkIf).
 
-2. Import the new module in [`nix/go.nix`](nix/go.nix) with the new
-   top-level option `imports` (lets you import other `devenv` modules):
+2. Import the new module in [`nix/go.nix`](nix/go.nix) with the new top-level
+   option `imports` (lets you import other `devenv` modules):
 
    ```nix
    imports = [

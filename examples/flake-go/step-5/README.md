@@ -12,9 +12,9 @@
    echo "🐹 Running: $(<go-executable> version) 🐹"
    ```
 
-   script to `nix/go.nix` which is always executed when entering the Nix
-   shell. Replace the `<go-executable>` with the Go executable path from the
-   `pkgs.go` derivation.
+   script to `nix/go.nix` which is always executed when entering the Nix shell.
+   Replace the `<go-executable>` with the Go executable path from the `pkgs.go`
+   derivation.
 
    **Hint:**
 

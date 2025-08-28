@@ -1,24 +1,24 @@
 {
-    "name": "DevContainer for Nix Workshop",
-    "image": "ghcr.io/sdsc-ordes/nix-workshop:latest",
-    "workspaceFolder": "/workspace",
-    "customizations": {
-        "vscode": {
-            "settings": {},
-            "extensions": [
-                "foxundermoon.shell-format",
-                "timonwong.shellcheck",
-                "EditorConfig.EditorConfig",
-                "esbenp.prettier-vscode"
-            ]
-        }
-    },
-    "runArgs": [
-        // For a docker setup outcomment this line:
-        "--userns=keep-id",
-        "-v",
-        "..:/workspace"
-    ],
-    // For a docker setup use `root`:
-    "remoteUser": "dev"
+  "name": "DevContainer for Nix Workshop",
+  "image": "ghcr.io/sdsc-ordes/nix-workshop:latest",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "settings": {},
+      "extensions": [
+        "foxundermoon.shell-format",
+        "timonwong.shellcheck",
+        "EditorConfig.EditorConfig",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "runArgs": [
+    // For a docker setup outcomment this line:
+    "--userns=keep-id",
+    "-v",
+    "..:/workspace"
+  ],
+  // For a docker setup use `root`:
+  "remoteUser": "dev"
 }

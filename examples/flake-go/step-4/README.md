@@ -17,11 +17,10 @@
    - `just`
 
    Add these packages to the configuration option
-   [`packages`](https://devenv.sh/reference/options/#packages) in
-   `nix/go.nix`.
+   [`packages`](https://devenv.sh/reference/options/#packages) in `nix/go.nix`.
 
-   **Hint:** How to access `pkgs` attribute set inside `nix/go.nix` -> You
-   need to make the content of `nix/go.nix` a module function.
+   **Hint:** How to access `pkgs` attribute set inside `nix/go.nix` -> You need
+   to make the content of `nix/go.nix` a module function.
 
 2. Add also `nixConfig` at top-level to the `flake.nix` with a substituter from
    `devenv`:
