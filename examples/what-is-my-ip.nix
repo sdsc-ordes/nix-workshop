@@ -5,6 +5,6 @@ let
   pkgs = f { inherit system; };
 in
 pkgs.writeShellScriptBin "what-is-my-ip" ''
-  ${pkgs.curl}/bin/curl -s http://httpbin.org/get | \
-    ${pkgs.jq}/bin/jq --raw-output .origin
+  ${pkgs.curl}/bin/curl -s http://ipinfo.io | \
+    ${pkgs.jq}/bin/jq --raw-output .io
 ''

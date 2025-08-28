@@ -19,15 +19,15 @@
    > nix-repl> :b packages.${builtins.currentSystem}.default.goModules
    >
    > This derivation produced the following outputs:
-   >   out -> /nix/store/xij5xpd9li73kyll8sxd85zgyy3hm1xv-go-demo-go-modules
+   >   out -> /nix/store/xij5xpd9li73kyll8sxd85zgyy3hm1xv-demo-go-modules
    > ```
    >
-   > Inspecting `/nix/store/xij5xpd9...-go-demo-go-modules` gives
+   > Inspecting `/nix/store/xij5xpd9...-demo-go-modules` gives
    >
    > ```bash
-   > tree -L 3 /nix/store/xij5xpd9li73kyll8sxd85zgyy3hm1xv-go-demo-go-modules
+   > tree -L 3 /nix/store/xij5xpd9li73kyll8sxd85zgyy3hm1xv-demo-go-modules
    >
-   > /nix/store/xij5xpd9li73kyll8sxd85zgyy3hm1xv-go-demo-go-modules
+   > /nix/store/xij5xpd9li73kyll8sxd85zgyy3hm1xv-demo-go-modules
    > ├── github.com
    > │   ├── aymanbagabas
    > │   │   └── go-osc52
@@ -65,12 +65,12 @@
 
    ```bash
    ls -ald ./result
-   > /nix/store/c8yfq7kwrwa2bflbn15fgafb95sv1wfl-go-demo
+   > /nix/store/c8yfq7kwrwa2bflbn15fgafb95sv1wfl-demo
    ```
 
    > [!NOTE]
    >
-   > The Nix derivation is called `go-demo` but the executable inside is named
+   > The Nix derivation is called `demo` but the executable inside is named
    > `bin/demo` due to how Go builds executables and how `pkgs.buildGoModule`
    > behaves.
 

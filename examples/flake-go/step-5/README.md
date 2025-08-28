@@ -2,18 +2,19 @@
 
 ## Exercises
 
-1. Add an environment variable `EXAMPLE_ENV_VAR` to `nix/go.nix`.
+1. **Add an environment variable `EXAMPLE_ENV_VAR` to the Nix Shell** in
+   `nix/go.nix`. such that it is available when entering it.
 
    **Hint:** [`env`](https://devenv.sh/reference/options/#env).
 
-2. Add a some bash
+2. **Add a bash script**
 
    ```bash
    echo "🐹 Running: $(<go-executable> version) 🐹"
    ```
 
-   script to `nix/go.nix` which is always executed when entering the Nix shell.
-   Replace the `<go-executable>` with the Go executable path from the `pkgs.go`
+   to `nix/go.nix` which is always executed when entering the Nix shell. Replace
+   the `<go-executable>` with the Go executable path from the `pkgs.go`
    derivation.
 
    **Hint:**
@@ -21,6 +22,10 @@
    - [`enterShell`](https://devenv.sh/reference/options/#entershell).
    - [`lib.getExe`](https://noogle.dev/f/lib/getExe)
 
-3. Optional: Add output on `enterShell` which depending on
-   `config.dotenv.enable` prints path of the file which was loaded
-   (`config.dotenv.filename`).
+3. Optional: Add an output in `enterShell` which depending on
+   `config.dotenv.enable` prints the path of the environment file which was
+   loaded (`config.dotenv.filename`).
+
+   **Hint:**
+
+   - [`dotenv.enable`](https://devenv.sh/reference/options/#dotenvenable).

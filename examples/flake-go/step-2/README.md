@@ -2,7 +2,7 @@
 
 ## Exercises
 
-### 1. **Write a `forAllSystems` function which:**
+1. **Write a `forAllSystems` function which:**
 
 - takes one argument `func`
 - calls `func` for all `supportedSystems`
@@ -36,7 +36,7 @@ supportedSystems = [
 - Use `nix repl` and load the flake `:lf .` and read the documentation with with
   `:e inputs.nixpkgs.lib`.
 
-### 2. **Enhance the function to provide access to packages which:**
+2. **Enhance the function to provide access to packages which:**
 
 - Takes an attribute set `{func, nixpkgs}` as input.
 - Imports the package attribute set from `nixpkgs` into variable `pkgs`.
@@ -50,7 +50,7 @@ forAllSystems :: {func, nixpkgs} -> AttrSet
 func :: {system, pkgs} -> AttrSet
 ```
 
-### 3. **Move the function to `nix/lib.nix`:**
+3. **Move the function to `nix/lib.nix`:**
 
 - Create a separate file for the function.
 - Import and use it in `flake.nix`.

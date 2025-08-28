@@ -7,7 +7,7 @@
 
    **Hint:** `nix repl` -> `:lf .` and `:e inputs.devenv.lib`
 
-2. The function `inputs.devenv.lib.mkShell` takes the following arguments where
+2. The function `inputs.devenv.lib.mkShell` takes the following arguments
 
 ```nix
 inputs.devenv.lib.mkShell {
@@ -17,14 +17,16 @@ inputs.devenv.lib.mkShell {
 }
 ```
 
-- `inputs`: the flake inputs.
-- `pkgs`: a package attribute set (e.g.
+where
+
+- `inputs`: is the flake inputs.
+- `pkgs`: is a package attribute set (e.g.
   `inputs.nixpkgs.legacyPackages.${system}`)
-- `modules`: a list of `devenv` modules.
+- `modules`: is a list of `devenv` modules.
 
-A `devenv` module can either be
+**A `devenv` module can either be**
 
-- a function
+- **a function**
 
   ```nix
   {config, pkgs, ...}: {
@@ -53,10 +55,10 @@ A `devenv` module can either be
   }
   ```
 
-- a simple attribute set with such a `devenv` configuration.
+- **a simple attribute set** with such a `devenv` configuration.
 
-- or a path (e.g. `./mymodule.nix`) to a file containing one of the above two in
-  which case it will simply `import` it.
+- or **a Nix path** (e.g. `./mymodule.nix`) to a Nix file containing one of the
+  above two.
 
 What options you can configure with such a module
 [is described in the documentation](https://devenv.sh/reference/options/).
@@ -68,9 +70,12 @@ What options you can configure with such a module
 > the module!) behind the scene by `inputs.devenv.lib.mkConfig` etc. The merge
 > behavior of the different options
 
-**Now:** Generate an output `devShells.<system>.default` with `forAllSystem`
-which results to a `mkShell` call. Pass `modules` of `mkShell` a path to
-`nix/go.nix` which contains an empty attribute set for now.
+**Now:** Do the following
+
+- Make an output `devShells.<system>.default` with `forAllSystem` which is the
+  result of `mkShell`.
+- Pass `modules` argument for `mkShell` a path to `nix/go.nix` which contains an
+  empty attribute set for now.
 
 3. Test the shell by entering it.
 

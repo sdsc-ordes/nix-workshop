@@ -20,8 +20,8 @@ derivation {
 
       {
         echo '#!/bin/sh'
-        echo '${pkgs.curl}/bin/curl -s http://httpbin.org/get | \
-        ${pkgs.jq}/bin/jq --raw-output .origin'
+        echo '${pkgs.curl}/bin/curl -s http://ipinfo.io | \
+        ${pkgs.jq}/bin/jq --raw-output .io'
       } > $out/bin/what-is-my-ip
 
       ${pkgs.coreutils}/bin/chmod +x $out/bin/what-is-my-ip
