@@ -14,12 +14,7 @@
     {
       packages = myLib.forAllSystems {
         inherit (inputs) nixpkgs;
-
-        func =
-          { pkgs, ... }:
-          {
-            my-fancy-app = pkgs.cowsay;
-          };
+        func = import ./nix/package.nix;
       };
 
       devShells = myLib.forAllSystems {

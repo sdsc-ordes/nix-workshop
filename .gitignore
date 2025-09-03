@@ -7,7 +7,7 @@
 
 # Build output.
 build
-result
+result*
 
 # VM Image files.
 *.qcow

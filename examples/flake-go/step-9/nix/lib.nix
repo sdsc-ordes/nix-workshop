@@ -1,10 +1,6 @@
-# A simple library which some functions.
 {
   forAllSystems =
-    {
-      nixpkgs,
-      func,
-    }:
+    { func, nixpkgs }:
     let
       supportedSystems = [
         "aarch64-darwin"
@@ -12,11 +8,14 @@
         "x86_64-darwin"
         "x86_64-linux"
       ];
+
+      pkgsFor = system: nixpkgs.legacyPackages.${system};
     in
     nixpkgs.lib.genAttrs supportedSystems (
       system:
       func {
-        pkgs = import nixpkgs { inherit system; };
+        inherit system;
+        pkgs = pkgsFor system;
         rootDir = ../.;
       }
     );
