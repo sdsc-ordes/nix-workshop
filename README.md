@@ -76,22 +76,28 @@ following approaches:
   the root of this repository
 
   ```bash
+  git clean -df
+
   podman run -it \
     --userns=keep-id \
     -v "$(pwd):/workspace" \
+    -w /workspace \
     ghcr.io/sdsc-ordes/nix-workshop:latest
   ```
 
   or
 
   ```bash
+  git clean -df
+
   docker run -it  \
     --user root \
     -v "$(pwd):/workspace" \
+    -w /workspace \
     ghcr.io/sdsc-ordes/nix-workshop:latest
   ```
 
-- **Use the `devcontainer`**
+- **Use the `devcontainer`** [
 
   A `devcontainer` setup is given in [`.devcontainer`](./.devcontainer). You can
   start this with `code`. **Adjust the
