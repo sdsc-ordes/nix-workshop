@@ -2,9 +2,9 @@ let
   system = builtins.currentSystem;
   src = builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/9684b53175fc6c09581e94cc85f05ab77464c7e3.tar.gz";
   f = import src;
-  pkgs = f { inherit system; };
+  pkgs = f {inherit system;};
 in
-pkgs.writeShellScriptBin "what-is-my-ip" ''
-  ${pkgs.curl}/bin/curl -s http://ipinfo.io | \
-    ${pkgs.jq}/bin/jq --raw-output .io
-''
+  pkgs.writeShellScriptBin "what-is-my-ip" ''
+    ${pkgs.curl}/bin/curl -s http://ipinfo.io | \
+      ${pkgs.jq}/bin/jq --raw-output .ip
+  ''
