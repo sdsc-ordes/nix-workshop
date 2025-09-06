@@ -22,8 +22,10 @@
       EXAMPLE_ENV_VAR = "MY_VALUE";
     };
 
-    enterShell = ''
-      echo "🐹 Running: $(${lib.getExe pkgs.go} version) 🐹"
-    '';
+    enterShell =
+      # bash
+      ''
+        echo "🐹 Running: $(${lib.getExe pkgs.go} version) 🐹"
+      '';
   };
 }

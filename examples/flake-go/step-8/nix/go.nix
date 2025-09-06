@@ -13,8 +13,10 @@
     pkgs.git
   ];
 
-  enterShell = ''
-    echo "🐹 Running: $(${lib.getExe pkgs.go} version) 🐹"
-  '';
+  enterShell =
+    # bash
+    ''
+      echo "🐹 Running: $(${lib.getExe pkgs.go} version) 🐹"
+    '';
 
 }

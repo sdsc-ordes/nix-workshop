@@ -22,9 +22,11 @@
       EXAMPLE_ENV_VAR = "MY_VALUE";
     };
 
-    enterShell = ''
-      echo "🐹 Running: $(${lib.getExe pkgs.go} version) 🐹"
-    '';
+    enterShell =
+      #bash
+      ''
+        echo "🐹 Running: $(${lib.getExe pkgs.go} version) 🐹"
+      '';
 
     # Enable the run script.
     # This option is available since we imported the module which defines it

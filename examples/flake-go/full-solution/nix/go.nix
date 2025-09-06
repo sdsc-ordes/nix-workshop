@@ -20,7 +20,9 @@
     EXAMPLE_ENV_VAR = "MY_VALUE";
   };
 
-  enterShell = ''
-    echo "🐹 Running: $(go version) 🐹"
-  '';
+  enterShell =
+    # bash
+    ''
+      echo "🐹 Running: $(go version) 🐹"
+    '';
 }

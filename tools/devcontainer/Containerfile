@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM docker.io/library/ubuntu:latest
 
 # Install prerequisites.
 RUN apt-get update && apt-get install -y \
@@ -38,6 +38,10 @@ COPY --chown=$USER_NAME:$USER_NAME setup/setup-zsh.sh $CONTAINER_SETUP_DIR/
 COPY --chown=$USER_NAME:$USER_NAME setup/shell $CONTAINER_SETUP_DIR/shell/
 RUN chmod +x $CONTAINER_SETUP_DIR/setup-zsh.sh && \
     $CONTAINER_SETUP_DIR/setup-zsh.sh "$PATH"
+
+COPY --chown=$USER_NAME:$USER_NAME setup/setup-nix-config.sh $CONTAINER_SETUP_DIR/
+RUN chmod +x $CONTAINER_SETUP_DIR/setup-nix-config.sh && \
+    $CONTAINER_SETUP_DIR/setup-nix-config.sh
 
 USER $USER_NAME
 
