@@ -1,4 +1,10 @@
 {
+  # Calls `func` with `{ system = ...; pkgs = ... }` and returns
+  # {
+  #   aarch64-linux = func { system = ...; pkgs = ...};
+  #   x86_64-linux= func { system = ...; pkgs = ...};
+  #   ...
+  # }
   forAllSystems =
     { func, nixpkgs }:
     let

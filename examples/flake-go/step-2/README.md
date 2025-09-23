@@ -2,11 +2,9 @@
 
 ## Exercises
 
-1. **Write a `forAllSystems` function which:**
+1. **Write a `forAllSystems` function with the following properties**:
 
-- takes one argument `func`
-- calls `func` for all `supportedSystems`
-- returns the result
+- Takes one argument `func` which is a function
 
   **Remember the `nix` function syntax:**
 
@@ -18,23 +16,34 @@
       # result here (don't forget the ';' at the end)
   ```
 
-**Define supported systems:**
+- Calls function `func` for all `supportedSystems`:
 
-```nix
-supportedSystems = [
-  "aarch64-darwin"  # Apple Silicon Macs
-  "aarch64-linux"   # ARM Linux
-  "x86_64-darwin"   # Intel Macs
-  "x86_64-linux"    # Intel/AMD Linux
-];
-```
+  ```nix
+  supportedSystems = [
+    "aarch64-darwin"  # Apple Silicon Macs
+    "aarch64-linux"   # ARM Linux
+    "x86_64-darwin"   # Intel Macs
+    "x86_64-linux"    # Intel/AMD Linux
+  ];
+  ```
+
+- Returns the result of the call which should produce the following attribute
+  set:
+
+  ```nix
+  {
+    "aarch64-darwin" = func "aarch64-darwin" ;
+    "aarch64-linux"  = func "aarch64-linux" ;
+    "x86_64-darwin"  = func "x86_64-darwin" ;
+    "x86_64-linux"  = func "x86_64-linux" ;
+  }
+  ```
 
 **Hints:**
 
 - Read the documentation online
-  [`lib.genAttrs`](https://noogle.dev/f/lib/genAttrs).
-- Use `nix repl` and load the flake `:lf .` and read the documentation with with
-  `:e inputs.nixpkgs.lib`.
+  [`lib.genAttrs`](https://noogle.dev/f/lib/genAttrs) and try it in
+  `nix repl -f <nixpkgs>`.
 
 2. **Enhance the function to provide access to packages which:**
 
