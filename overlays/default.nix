@@ -18,7 +18,7 @@ let
   # be accessible through 'pkgs.unstable'
   unstable = final: _prev: {
     # Import nixpkgs (the unstable input).
-    unstable = import inputs.nixpkgsUnstable {
+    unstable = import inputs.nixpkgs-unstable {
       overlays = [ modifications ];
       system = final.system;
       config.allowUnfree = true;
